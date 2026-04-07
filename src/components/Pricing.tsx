@@ -74,8 +74,8 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
     <div
       className={`relative flex flex-col rounded-2xl p-6 sm:p-8 transition-all duration-300 ${
         tier.highlighted
-          ? "bg-surface-900 text-white shadow-2xl shadow-surface-900/20 ring-1 ring-surface-800"
-          : "bg-white border border-surface-200 hover:border-primary-300 hover:shadow-lg"
+          ? "bg-surface-900 dark:bg-white text-white dark:text-surface-900 shadow-2xl shadow-surface-900/20 dark:shadow-surface-900/10 ring-1 ring-surface-800 dark:ring-surface-200"
+          : "bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-lg"
       } ${isInView ? "animate-slide-up" : "opacity-0"}`}
       style={{ animationDelay: delay }}
     >
@@ -90,7 +90,7 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
       <div className="mb-6">
         <h3
           className={`text-lg font-semibold ${
-            tier.highlighted ? "text-white" : "text-surface-900"
+            tier.highlighted ? "text-white dark:text-surface-900" : "text-surface-900 dark:text-white"
           }`}
         >
           {tier.name}
@@ -98,7 +98,7 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
         <div className="mt-3 flex items-baseline gap-1">
           <span
             className={`text-4xl font-extrabold tracking-tight ${
-              tier.highlighted ? "text-white" : "text-surface-900"
+              tier.highlighted ? "text-white dark:text-surface-900" : "text-surface-900 dark:text-white"
             }`}
           >
             {tier.price}
@@ -106,7 +106,7 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
           {tier.period && (
             <span
               className={`text-sm font-medium ${
-                tier.highlighted ? "text-surface-400" : "text-surface-500"
+                tier.highlighted ? "text-surface-400 dark:text-surface-500" : "text-surface-500 dark:text-surface-400"
               }`}
             >
               {tier.period}
@@ -115,7 +115,7 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
         </div>
         <p
           className={`mt-2 text-sm leading-relaxed ${
-            tier.highlighted ? "text-surface-400" : "text-surface-500"
+            tier.highlighted ? "text-surface-400 dark:text-surface-500" : "text-surface-500 dark:text-surface-400"
           }`}
         >
           {tier.description}
@@ -127,7 +127,7 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
           <li key={feature} className="flex items-start gap-3">
             <svg
               className={`w-5 h-5 shrink-0 mt-0.5 ${
-                tier.highlighted ? "text-primary-400" : "text-primary-500"
+                tier.highlighted ? "text-primary-400 dark:text-primary-500" : "text-primary-500 dark:text-primary-400"
               }`}
               viewBox="0 0 24 24"
               fill="none"
@@ -141,7 +141,7 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
             </svg>
             <span
               className={`text-sm ${
-                tier.highlighted ? "text-surface-300" : "text-surface-600"
+                tier.highlighted ? "text-surface-300 dark:text-surface-600" : "text-surface-600 dark:text-surface-300"
               }`}
             >
               {feature}
@@ -152,9 +152,9 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
 
       <a
         href="#contact"
-        className={`block w-full text-center py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 ${
+        className={`block w-full text-center py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-900 ${
           tier.highlighted
-            ? "bg-white text-surface-900 hover:bg-surface-100 shadow-lg"
+            ? "bg-white dark:bg-surface-900 text-surface-900 dark:text-white hover:bg-surface-100 dark:hover:bg-surface-800 shadow-lg"
             : "bg-primary-500 text-white hover:bg-primary-600 shadow-md shadow-primary-500/20"
         }`}
       >
@@ -178,7 +178,7 @@ export function Pricing() {
         {/* Section Header */}
         <div className="max-w-2xl mx-auto text-center mb-16">
           <span
-            className={`inline-block text-sm font-semibold text-primary-500 uppercase tracking-wider mb-3 ${
+            className={`inline-block text-sm font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wider mb-3 ${
               isInView ? "animate-fade-in" : "opacity-0"
             }`}
           >
@@ -186,7 +186,7 @@ export function Pricing() {
           </span>
           <h2
             id="pricing-heading"
-            className={`text-3xl sm:text-4xl font-extrabold tracking-tight text-surface-900 ${
+            className={`text-3xl sm:text-4xl font-extrabold tracking-tight text-surface-900 dark:text-white ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
@@ -194,7 +194,7 @@ export function Pricing() {
             <span className="gradient-text">creative craft</span>
           </h2>
           <p
-            className={`mt-4 text-lg text-surface-500 ${
+            className={`mt-4 text-lg text-surface-500 dark:text-surface-400 ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
             style={{ animationDelay: "0.1s" }}

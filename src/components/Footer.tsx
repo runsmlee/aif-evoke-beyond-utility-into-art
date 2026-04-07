@@ -32,7 +32,7 @@ export function Footer() {
   ];
 
   return (
-    <footer className="bg-surface-50 border-t border-surface-200" aria-label="Site footer">
+    <footer className="bg-surface-50 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-800" aria-label="Site footer">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer */}
         <div className="py-12 sm:py-16 grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -56,9 +56,9 @@ export function Footer() {
                   <path d="M2 12l10 5 10-5" />
                 </svg>
               </div>
-              <span className="text-lg font-bold text-surface-900">Evoke</span>
+              <span className="text-lg font-bold text-surface-900 dark:text-white">Evoke</span>
             </a>
-            <p className="mt-3 text-sm text-surface-500 leading-relaxed max-w-xs">
+            <p className="mt-3 text-sm text-surface-500 dark:text-surface-400 leading-relaxed max-w-xs">
               Beyond utility, into art. Crafting digital experiences that inspire
               and delight.
             </p>
@@ -66,7 +66,7 @@ export function Footer() {
             <div className="mt-4 flex items-center gap-3">
               <a
                 href="#"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-surface-400 hover:text-primary-500 hover:bg-surface-100 transition-colors duration-200"
+                className="w-9 h-9 flex items-center justify-center rounded-lg text-surface-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-200"
                 aria-label="Evoke on Twitter"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -75,7 +75,7 @@ export function Footer() {
               </a>
               <a
                 href="#"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-surface-400 hover:text-primary-500 hover:bg-surface-100 transition-colors duration-200"
+                className="w-9 h-9 flex items-center justify-center rounded-lg text-surface-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-200"
                 aria-label="Evoke on GitHub"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -84,7 +84,7 @@ export function Footer() {
               </a>
               <a
                 href="#"
-                className="w-9 h-9 flex items-center justify-center rounded-lg text-surface-400 hover:text-primary-500 hover:bg-surface-100 transition-colors duration-200"
+                className="w-9 h-9 flex items-center justify-center rounded-lg text-surface-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-200"
                 aria-label="Evoke on LinkedIn"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -97,7 +97,7 @@ export function Footer() {
           {/* Link Columns */}
           {footerLinks.map((group) => (
             <div key={group.heading}>
-              <h3 className="text-sm font-semibold text-surface-900 mb-3">
+              <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-3">
                 {group.heading}
               </h3>
               <ul className="space-y-2.5">
@@ -105,7 +105,7 @@ export function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-sm text-surface-500 hover:text-primary-500 transition-colors duration-200"
+                      className="text-sm text-surface-500 dark:text-surface-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
                     >
                       {link.label}
                     </a>
@@ -117,26 +117,26 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-6 border-t border-surface-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-surface-400">
+        <div className="py-6 border-t border-surface-200 dark:border-surface-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-surface-400 dark:text-surface-500">
             &copy; {currentYear} Evoke. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a
               href="#"
-              className="text-sm text-surface-400 hover:text-primary-500 transition-colors duration-200"
+              className="text-sm text-surface-400 dark:text-surface-500 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
             >
               Privacy
             </a>
             <a
               href="#"
-              className="text-sm text-surface-400 hover:text-primary-500 transition-colors duration-200"
+              className="text-sm text-surface-400 dark:text-surface-500 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
             >
               Terms
             </a>
             <a
               href="#"
-              className="text-sm text-surface-400 hover:text-primary-500 transition-colors duration-200"
+              className="text-sm text-surface-400 dark:text-surface-500 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
             >
               Cookies
             </a>

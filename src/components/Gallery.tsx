@@ -177,14 +177,14 @@ export function Gallery() {
     <section
       id="gallery"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-50/80"
+      className="py-20 sm:py-28 bg-surface-50/80 dark:bg-surface-900/30"
       aria-labelledby="gallery-heading"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mx-auto text-center mb-12">
           <span
-            className={`inline-block text-sm font-semibold text-primary-500 uppercase tracking-wider mb-3 ${
+            className={`inline-block text-sm font-semibold text-primary-500 dark:text-primary-400 uppercase tracking-wider mb-3 ${
               isInView ? "animate-fade-in" : "opacity-0"
             }`}
           >
@@ -192,14 +192,14 @@ export function Gallery() {
           </span>
           <h2
             id="gallery-heading"
-            className={`text-3xl sm:text-4xl font-extrabold tracking-tight text-surface-900 ${
+            className={`text-3xl sm:text-4xl font-extrabold tracking-tight text-surface-900 dark:text-white ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
             The <span className="gradient-text">Gallery</span>
           </h2>
           <p
-            className={`mt-4 text-lg text-surface-500 ${
+            className={`mt-4 text-lg text-surface-500 dark:text-surface-400 ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
             style={{ animationDelay: "0.1s" }}
@@ -233,7 +233,7 @@ export function Gallery() {
               className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                 activeFilter === category
                   ? "bg-primary-500 text-white shadow-md shadow-primary-500/25"
-                  : "bg-white text-surface-600 hover:bg-surface-100 border border-surface-200"
+                  : "bg-white dark:bg-surface-800 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-700 border border-surface-200 dark:border-surface-700"
               }`}
             >
               {category}
@@ -250,7 +250,7 @@ export function Gallery() {
           {filteredItems.map((item, index) => (
             <article
               key={item.id}
-              className={`group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-300 ${
+              className={`group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-300 gallery-item-enter ${
                 isInView ? "animate-scale-in" : "opacity-0"
               }`}
               style={{ animationDelay: `${0.08 * index}s` }}

@@ -1,6 +1,9 @@
 import { Suspense, lazy } from "react";
 import { Hero } from "./components/Hero";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { ScrollProgress } from "./components/ScrollProgress";
+import { BackToTop } from "./components/BackToTop";
+import { useTheme } from "./hooks/useTheme";
 
 const Header = lazy(() =>
   import("./components/Header").then((m) => ({ default: m.Header }))
@@ -39,14 +42,17 @@ function SectionLoader() {
 }
 
 export function App() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-surface-950 transition-colors duration-300">
       <a href="#main-content" className="skip-link">
         Skip to content
       </a>
+      <ScrollProgress />
       <ErrorBoundary>
         <Suspense fallback={<header className="h-16" aria-hidden="true" />}>
-          <Header />
+          <Header theme={theme} toggleTheme={toggleTheme} />
         </Suspense>
       </ErrorBoundary>
       <main id="main-content">
@@ -82,6 +88,7 @@ export function App() {
           <Footer />
         </Suspense>
       </ErrorBoundary>
+      <BackToTop />
     </div>
   );
 }

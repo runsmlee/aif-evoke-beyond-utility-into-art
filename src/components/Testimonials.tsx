@@ -17,7 +17,7 @@ const testimonials: Testimonial[] = [
     author: "Maya Rodriguez",
     role: "Art Director, Studio Volta",
     initials: "MR",
-    bgColor: "bg-primary-100 text-primary-700",
+    bgColor: "bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300",
   },
   {
     id: "t2",
@@ -26,7 +26,7 @@ const testimonials: Testimonial[] = [
     author: "James Chen",
     role: "Senior Designer, Parallel",
     initials: "JC",
-    bgColor: "bg-amber-100 text-amber-700",
+    bgColor: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
   },
   {
     id: "t3",
@@ -35,7 +35,7 @@ const testimonials: Testimonial[] = [
     author: "Aria Nakamura",
     role: "Creative Lead, Bloom Co.",
     initials: "AN",
-    bgColor: "bg-violet-100 text-violet-700",
+    bgColor: "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300",
   },
 ];
 
@@ -46,7 +46,7 @@ export function Testimonials() {
     <section
       id="testimonials"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-900 text-white relative overflow-hidden"
+      className="py-20 sm:py-28 bg-surface-900 dark:bg-surface-950 text-white relative overflow-hidden"
       aria-labelledby="testimonials-heading"
     >
       {/* Background decoration */}
@@ -90,7 +90,7 @@ export function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <blockquote
               key={testimonial.id}
-              className={`bg-surface-800/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-surface-700/50 hover:border-surface-600 transition-all duration-300 hover:-translate-y-1 ${
+              className={`bg-surface-800/80 dark:bg-surface-800/50 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-surface-700/50 dark:border-surface-700/30 hover:border-surface-600 dark:hover:border-surface-600 transition-all duration-300 hover:-translate-y-1 ${
                 isInView ? "animate-slide-up" : "opacity-0"
               }`}
               style={{ animationDelay: `${index * 0.12}s` }}
@@ -112,7 +112,7 @@ export function Testimonials() {
                 ))}
               </div>
 
-              <p className="text-surface-300 leading-relaxed mb-6 text-[0.938rem]">
+              <p className="text-surface-300 dark:text-surface-400 leading-relaxed mb-6 text-[0.938rem]">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
 

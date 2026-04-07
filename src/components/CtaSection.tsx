@@ -1,7 +1,21 @@
+import { useState, useCallback } from "react";
 import { useInView } from "../hooks/useInView";
 
 export function CtaSection() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (email.trim() && email.includes("@")) {
+        setSubmitted(true);
+        setEmail("");
+      }
+    },
+    [email],
+  );
 
   return (
     <section
@@ -35,35 +49,60 @@ export function CtaSection() {
               Start your journey today — no credit card required.
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a
-                href="#"
-                className="group inline-flex items-center px-7 py-3.5 text-base font-semibold text-primary-600 bg-white rounded-xl hover:bg-surface-50 transition-all duration-200 shadow-lg shadow-primary-900/30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600"
-              >
-                Start Creating Free
-                <svg
-                  className="ml-2 w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
+            {/* Email signup form */}
+            <form
+              onSubmit={handleSubmit}
+              className="mt-8 max-w-md mx-auto"
+              noValidate
+            >
+              {submitted ? (
+                <div
+                  className="flex items-center justify-center gap-2 py-3.5 px-6 bg-white/20 backdrop-blur-sm rounded-xl text-white font-semibold animate-fade-in"
+                  role="status"
+                  aria-live="polite"
                 >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
-              <a
-                href="#"
-                className="inline-flex items-center px-7 py-3.5 text-base font-semibold text-white border border-white/25 rounded-xl hover:bg-white/10 backdrop-blur-sm transition-all duration-200 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600"
-              >
-                Schedule a Demo
-              </a>
-            </div>
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  Welcome aboard! Check your inbox.
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <label htmlFor="cta-email" className="sr-only">
+                    Email address
+                  </label>
+                  <input
+                    id="cta-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                    className="flex-1 px-4 py-3.5 text-surface-900 placeholder-surface-400 bg-white rounded-xl border-0 focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base"
+                    aria-label="Email address for signup"
+                  />
+                  <button
+                    type="submit"
+                    className="px-6 py-3.5 text-sm sm:text-base font-semibold text-primary-600 bg-white rounded-xl hover:bg-surface-50 transition-all duration-200 shadow-lg shadow-primary-900/30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 whitespace-nowrap"
+                  >
+                    Get Started Free
+                  </button>
+                </div>
+              )}
+            </form>
 
             {/* Trust badges */}
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-primary-200/80">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-primary-200/80">
               <span className="flex items-center gap-1.5">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                   <polyline points="20 6 9 17 4 12" />

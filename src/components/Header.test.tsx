@@ -1,15 +1,20 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Header } from "./Header";
+
+const defaultProps = {
+  theme: "light" as const,
+  toggleTheme: vi.fn(),
+};
 
 describe("Header", () => {
   it("renders the Evoke logo and brand name", () => {
-    render(<Header />);
-    expect(screen.getByText("Evoke")).toBeDefined();
+    render(<Header {...defaultProps} />);
+    expect(screen.getAllByText("Evoke").length).toBeGreaterThan(0);
   });
 
   it("renders desktop navigation links", () => {
-    render(<Header />);
+    render(<Header {...defaultProps} />);
     expect(screen.getByText("Features")).toBeDefined();
     expect(screen.getByText("Gallery")).toBeDefined();
     expect(screen.getByText("Voices")).toBeDefined();
@@ -19,13 +24,13 @@ describe("Header", () => {
   });
 
   it("renders the Get Started CTA button", () => {
-    render(<Header />);
+    render(<Header {...defaultProps} />);
     const ctaButtons = screen.getAllByText("Get Started");
     expect(ctaButtons.length).toBeGreaterThan(0);
   });
 
   it("toggles mobile menu on button click", () => {
-    render(<Header />);
+    render(<Header {...defaultProps} />);
     const menuButton = screen.getByLabelText("Open menu");
 
     // Open menu
@@ -40,8 +45,30 @@ describe("Header", () => {
   });
 
   it("has accessible main navigation landmark", () => {
-    render(<Header />);
+    render(<Header {...defaultProps} />);
     const nav = screen.getByRole("navigation", { name: "Main navigation" });
     expect(nav).toBeDefined();
+  });
+
+  it("renders theme toggle buttons (desktop + mobile)", () => {
+    render(<Header {...defaultProps} />);
+    // Two toggle buttons exist: one for desktop, one for mobile
+    const toggles = screen.getAllByLabelText("Switch to dark mode");
+    expect(toggles.length).toBe(2);
+  });
+
+  it("calls toggleTheme when theme toggle is clicked", () => {
+    const toggleTheme = vi.fn();
+    render(<Header theme="light" toggleTheme={toggleTheme} />);
+    const toggles = screen.getAllByLabelText("Switch to dark mode");
+    const toggle = toggles[0]!;
+    fireEvent.click(toggle);
+    expect(toggleTheme).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows correct aria-label for dark mode state", () => {
+    render(<Header theme="dark" toggleTheme={vi.fn()} />);
+    const toggles = screen.getAllByLabelText("Switch to light mode");
+    expect(toggles.length).toBeGreaterThan(0);
   });
 });

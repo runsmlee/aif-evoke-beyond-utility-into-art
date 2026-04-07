@@ -1,6 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
+import { ThemeToggle } from "./ThemeToggle";
+import { type Theme } from "../hooks/useTheme";
 
-export function Header() {
+interface HeaderProps {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+
+export function Header({ theme, toggleTheme }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -54,7 +61,7 @@ export function Header() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/90 backdrop-blur-lg shadow-sm border-b border-surface-200/60"
+          ? "bg-white/90 dark:bg-surface-950/90 backdrop-blur-lg shadow-sm border-b border-surface-200/60 dark:border-surface-800/60"
           : "bg-transparent"
       }`}
     >
@@ -83,7 +90,7 @@ export function Header() {
                 <path d="M2 12l10 5 10-5" />
               </svg>
             </div>
-            <span className="text-lg font-bold tracking-tight text-surface-900">
+            <span className="text-lg font-bold tracking-tight text-surface-900 dark:text-white">
               Evoke
             </span>
           </a>
@@ -94,55 +101,59 @@ export function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className="px-3.5 py-2 text-sm font-medium text-surface-600 hover:text-primary-500 rounded-lg hover:bg-primary-50/50 transition-all duration-200"
+                className="px-3.5 py-2 text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-primary-500 dark:hover:text-primary-400 rounded-lg hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all duration-200"
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Desktop CTA + Theme Toggle */}
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
             <a
               href="#pricing"
-              className="px-4 py-2 text-sm font-medium text-surface-600 hover:text-surface-900 transition-colors duration-200"
+              className="px-4 py-2 text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-surface-900 dark:hover:text-white transition-colors duration-200"
             >
               Pricing
             </a>
             <a
               href="#contact"
-              className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-md shadow-primary-500/20 hover:shadow-lg hover:shadow-primary-500/30 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+              className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-md shadow-primary-500/20 hover:shadow-lg hover:shadow-primary-500/30 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-900"
             >
               Get Started
             </a>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            type="button"
-            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-xl text-surface-600 hover:text-surface-900 hover:bg-surface-100 transition-colors duration-200"
-            onClick={toggleMenu}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-menu"
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            {mobileMenuOpen ? (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-                <path d="M3 12h18M3 6h18M3 18h18" />
-              </svg>
-            )}
-          </button>
+          <div className="md:hidden flex items-center gap-1">
+            <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
+            <button
+              type="button"
+              className="inline-flex items-center justify-center w-10 h-10 rounded-xl text-surface-600 dark:text-surface-300 hover:text-surface-900 dark:hover:text-white hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-200"
+              onClick={toggleMenu}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            >
+              {mobileMenuOpen ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                  <path d="M3 12h18M3 6h18M3 18h18" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile Menu Backdrop */}
       {mobileMenuOpen && (
         <div
-          className="md:hidden fixed inset-0 top-16 bg-black/20 backdrop-blur-sm z-40 animate-fade-in"
+          className="md:hidden fixed inset-0 top-16 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-40 animate-fade-in"
           aria-hidden="true"
           onClick={closeMenu}
         />
@@ -152,7 +163,7 @@ export function Header() {
       {mobileMenuOpen && (
         <nav
           id="mobile-menu"
-          className="md:hidden relative z-50 border-t border-surface-200 bg-white/95 backdrop-blur-lg animate-slide-down"
+          className="md:hidden relative z-50 border-t border-surface-200 dark:border-surface-700 bg-white/95 dark:bg-surface-900/95 backdrop-blur-lg animate-slide-down"
           aria-label="Mobile navigation"
         >
           <div className="px-4 py-3 space-y-1">
@@ -160,7 +171,7 @@ export function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className="block px-3 py-2.5 text-sm font-medium text-surface-700 hover:text-primary-500 hover:bg-surface-50 rounded-xl transition-colors duration-200"
+                className="block px-3 py-2.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-xl transition-colors duration-200"
                 onClick={closeMenu}
               >
                 {link.label}

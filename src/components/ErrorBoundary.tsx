@@ -37,13 +37,13 @@ export class ErrorBoundary extends Component<
           role="alert"
         >
           <div className="text-center">
-            <p className="text-surface-500 text-sm">
+            <p className="text-surface-500 dark:text-surface-400 text-sm">
               Something went wrong loading this section.
             </p>
             <button
               type="button"
               onClick={() => this.setState({ hasError: false })}
-              className="mt-3 px-4 py-2 text-sm font-medium text-primary-600 hover:text-primary-700 underline underline-offset-2"
+              className="mt-3 px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline underline-offset-2"
             >
               Try again
             </button>
