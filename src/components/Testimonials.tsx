@@ -46,15 +46,28 @@ export function Testimonials() {
     <section
       id="testimonials"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-900 text-white"
+      className="py-20 sm:py-28 bg-surface-900 text-white relative overflow-hidden"
       aria-labelledby="testimonials-heading"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Background decoration */}
+      <div className="absolute inset-0 -z-0" aria-hidden="true">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mx-auto text-center mb-16">
+          <span
+            className={`inline-block text-sm font-semibold text-primary-400 uppercase tracking-wider mb-3 ${
+              isInView ? "animate-fade-in" : "opacity-0"
+            }`}
+          >
+            Testimonials
+          </span>
           <h2
             id="testimonials-heading"
-            className={`text-3xl sm:text-4xl font-bold tracking-tight ${
+            className={`text-3xl sm:text-4xl font-extrabold tracking-tight ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
@@ -77,10 +90,10 @@ export function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <blockquote
               key={testimonial.id}
-              className={`bg-surface-800 rounded-2xl p-6 sm:p-8 border border-surface-700 hover:border-surface-600 transition-colors duration-300 ${
+              className={`bg-surface-800/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-surface-700/50 hover:border-surface-600 transition-all duration-300 hover:-translate-y-1 ${
                 isInView ? "animate-slide-up" : "opacity-0"
               }`}
-              style={{ animationDelay: `${index * 0.15}s` }}
+              style={{ animationDelay: `${index * 0.12}s` }}
             >
               {/* Stars */}
               <div className="flex gap-1 mb-4" aria-label="5 out of 5 stars">
@@ -99,19 +112,19 @@ export function Testimonials() {
                 ))}
               </div>
 
-              <p className="text-surface-300 leading-relaxed mb-6">
+              <p className="text-surface-300 leading-relaxed mb-6 text-[0.938rem]">
                 &ldquo;{testimonial.quote}&rdquo;
               </p>
 
               <footer className="flex items-center gap-3">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold ${testimonial.bgColor}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${testimonial.bgColor}`}
                   aria-hidden="true"
                 >
                   {testimonial.initials}
                 </div>
                 <div>
-                  <div className="font-medium text-white">
+                  <div className="font-semibold text-white">
                     {testimonial.author}
                   </div>
                   <div className="text-sm text-surface-400">

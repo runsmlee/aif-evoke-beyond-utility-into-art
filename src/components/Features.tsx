@@ -11,16 +11,21 @@ interface FeatureCardProps {
 function FeatureCard({ icon, title, description, delay, isInView }: FeatureCardProps) {
   return (
     <div
-      className={`group relative p-6 sm:p-8 bg-white rounded-2xl border border-surface-200 hover:border-primary-300 hover:shadow-xl hover:shadow-primary-500/5 transition-all duration-300 ${
+      className={`group relative p-6 sm:p-8 bg-white rounded-2xl border border-surface-200/80 hover:border-primary-300 hover:shadow-xl hover:shadow-primary-500/5 transition-all duration-300 ${
         isInView ? "animate-slide-up" : "opacity-0"
       }`}
       style={{ animationDelay: delay }}
     >
-      <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-primary-500 mb-5 group-hover:bg-primary-500 group-hover:text-white transition-colors duration-300">
-        {icon}
+      {/* Subtle gradient on hover */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary-50/0 to-primary-50/0 group-hover:from-primary-50/50 group-hover:to-transparent transition-all duration-300 pointer-events-none" aria-hidden="true" />
+
+      <div className="relative">
+        <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center text-primary-500 mb-5 group-hover:bg-primary-500 group-hover:text-white group-hover:shadow-lg group-hover:shadow-primary-500/25 transition-all duration-300">
+          {icon}
+        </div>
+        <h3 className="text-lg font-semibold text-surface-900 mb-2">{title}</h3>
+        <p className="text-surface-500 leading-relaxed text-[0.938rem]">{description}</p>
       </div>
-      <h3 className="text-lg font-semibold text-surface-900 mb-2">{title}</h3>
-      <p className="text-surface-500 leading-relaxed">{description}</p>
     </div>
   );
 }
@@ -110,20 +115,27 @@ export function Features() {
     <section
       id="features"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-50"
+      className="py-20 sm:py-28 bg-surface-50/80"
       aria-labelledby="features-heading"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-2xl mx-auto text-center mb-16">
+          <span
+            className={`inline-block text-sm font-semibold text-primary-500 uppercase tracking-wider mb-3 ${
+              isInView ? "animate-fade-in" : "opacity-0"
+            }`}
+          >
+            Features
+          </span>
           <h2
             id="features-heading"
-            className={`text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 ${
+            className={`text-3xl sm:text-4xl font-extrabold tracking-tight text-surface-900 ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
             Designed for the{" "}
-            <span className="text-primary-500">discerning creator</span>
+            <span className="gradient-text">discerning creator</span>
           </h2>
           <p
             className={`mt-4 text-lg text-surface-500 ${
@@ -142,7 +154,7 @@ export function Features() {
             <FeatureCard
               key={feature.title}
               {...feature}
-              delay={`${index * 0.1}s`}
+              delay={`${index * 0.08}s`}
               isInView={isInView}
             />
           ))}

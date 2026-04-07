@@ -49,4 +49,28 @@ describe("Gallery", () => {
     fireEvent.click(screen.getByRole("tab", { name: "All" }));
     expect(screen.getByText("Fluid Dynamics")).toBeDefined();
   });
+
+  it("navigates between tabs with arrow keys", () => {
+    render(<Gallery />);
+
+    const allTab = screen.getByRole("tab", { name: "All" });
+
+    // Arrow right should move to next tab
+    fireEvent.keyDown(allTab, { key: "ArrowRight" });
+    expect(screen.getByRole("tab", { selected: true }).textContent).not.toBe("All");
+
+    // Arrow left should wrap back
+    fireEvent.keyDown(screen.getByRole("tab", { selected: true }), { key: "ArrowLeft" });
+    expect(screen.getByRole("tab", { selected: true }).textContent).toBe("All");
+  });
+
+  it("uses roving tabindex for keyboard accessibility", () => {
+    render(<Gallery />);
+
+    const tabs = screen.getAllByRole("tab");
+    // Only the active tab should have tabIndex 0
+    const activeTab = tabs[0];
+    expect(activeTab).toHaveAttribute("tabIndex", "0");
+    expect(tabs[1]).toHaveAttribute("tabIndex", "-1");
+  });
 });

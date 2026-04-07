@@ -13,7 +13,9 @@ describe("Header", () => {
     expect(screen.getByText("Features")).toBeDefined();
     expect(screen.getByText("Gallery")).toBeDefined();
     expect(screen.getByText("Voices")).toBeDefined();
-    expect(screen.getByText("Contact")).toBeDefined();
+    // "Pricing" appears in both nav and CTA area — verify at least one exists
+    const pricingLinks = screen.getAllByText("Pricing");
+    expect(pricingLinks.length).toBeGreaterThanOrEqual(1);
   });
 
   it("renders the Get Started CTA button", () => {
