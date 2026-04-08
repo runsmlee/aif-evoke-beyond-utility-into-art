@@ -121,26 +121,28 @@ export function Footer() {
           <p className="text-sm text-surface-400 dark:text-surface-500">
             &copy; {currentYear} Evoke. All rights reserved.
           </p>
-          <div className="flex items-center gap-6">
+          <nav aria-label="Legal links" className="flex items-center gap-6">
             <a
               href="#"
               className="text-sm text-surface-400 dark:text-surface-500 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
             >
               Privacy
             </a>
+            <span className="text-surface-300 dark:text-surface-600" aria-hidden="true">·</span>
             <a
               href="#"
               className="text-sm text-surface-400 dark:text-surface-500 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
             >
               Terms
             </a>
+            <span className="text-surface-300 dark:text-surface-600" aria-hidden="true">·</span>
             <a
               href="#"
               className="text-sm text-surface-400 dark:text-surface-500 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
             >
               Cookies
             </a>
-          </div>
+          </nav>
         </div>
       </div>
     </footer>

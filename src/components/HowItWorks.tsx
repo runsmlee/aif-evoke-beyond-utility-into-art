@@ -126,14 +126,14 @@ export function HowItWorks() {
             {steps.map((step, index) => (
               <div
                 key={step.title}
-                className={`relative flex md:flex-col items-start md:items-center gap-4 md:gap-0 md:text-center ${
+                className={`relative flex md:flex-col items-start md:items-center gap-4 md:gap-0 md:text-center md:py-4 group ${
                   isInView ? "animate-slide-up" : "opacity-0"
                 }`}
                 style={{ animationDelay: `${0.15 + index * 0.1}s` }}
               >
                 {/* Step circle */}
                 <div className="relative z-10 flex-shrink-0">
-                  <div className="w-12 h-12 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-lg shadow-primary-500/25">
+                  <div className="w-12 h-12 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-primary-500/30 transition-transform duration-300">
                     <span className="text-sm font-bold">{step.number}</span>
                   </div>
                 </div>

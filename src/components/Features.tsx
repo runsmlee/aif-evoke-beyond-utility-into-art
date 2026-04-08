@@ -11,7 +11,7 @@ interface FeatureCardProps {
 function FeatureCard({ icon, title, description, delay, isInView }: FeatureCardProps) {
   return (
     <div
-      className={`group relative p-6 sm:p-8 bg-white dark:bg-surface-800 rounded-2xl border border-surface-200/80 dark:border-surface-700/80 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-xl hover:shadow-primary-500/5 transition-all duration-300 ${
+      className={`group relative p-6 sm:p-8 bg-white dark:bg-surface-800 rounded-2xl border border-surface-200/80 dark:border-surface-700/80 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-xl hover:shadow-primary-500/5 hover:-translate-y-1 transition-all duration-300 ${
         isInView ? "animate-slide-up" : "opacity-0"
       }`}
       style={{ animationDelay: delay }}

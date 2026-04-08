@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useInView } from "../hooks/useInView";
 
 interface FaqItem {
@@ -49,6 +49,17 @@ function FaqItemComponent({
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [maxHeight, setMaxHeight] = useState("0px");
+
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      setMaxHeight(`${contentRef.current.scrollHeight}px`);
+    } else {
+      setMaxHeight("0px");
+    }
+  }, [isOpen]);
+
   return (
     <div className="border-b border-surface-200 dark:border-surface-700 last:border-b-0">
       <h3>
@@ -81,11 +92,13 @@ function FaqItemComponent({
         id={`${item.id}-panel`}
         role="region"
         aria-labelledby={`${item.id}-button`}
-        className={isOpen ? "block" : "hidden"}
+        style={{ maxHeight, overflow: "hidden", transition: "max-height 0.3s ease-out" }}
       >
-        <p className="pb-5 px-1 text-surface-500 dark:text-surface-400 leading-relaxed">
-          {item.answer}
-        </p>
+        <div ref={contentRef}>
+          <p className="pb-5 px-1 text-surface-500 dark:text-surface-400 leading-relaxed">
+            {item.answer}
+          </p>
+        </div>
       </div>
     </div>
   );

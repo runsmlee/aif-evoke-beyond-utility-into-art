@@ -271,10 +271,15 @@ export function Gallery() {
           role="tabpanel"
           aria-label="Gallery items"
         >
+          {filteredItems.length === 0 && (
+            <div className="col-span-full text-center py-16">
+              <p className="text-surface-400 dark:text-surface-500 text-lg">No items in this category yet.</p>
+            </div>
+          )}
           {filteredItems.map((item, index) => (
             <article
               key={item.id}
-              className={`group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-shadow duration-300 gallery-item-enter ${
+              className={`group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 gallery-item-enter ${
                 isInView ? "animate-scale-in" : "opacity-0"
               }`}
               style={{ animationDelay: `${0.08 * index}s` }}

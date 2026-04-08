@@ -85,7 +85,7 @@ function PricingCard({ tier, isInView, delay, billing }: PricingCardProps) {
     <div
       className={`relative flex flex-col rounded-2xl p-6 sm:p-8 transition-all duration-300 ${
         tier.highlighted
-          ? "bg-surface-900 dark:bg-white text-white dark:text-surface-900 shadow-2xl shadow-surface-900/20 dark:shadow-surface-900/10 ring-1 ring-surface-800 dark:ring-surface-200"
+          ? "bg-surface-900 dark:bg-white text-white dark:text-surface-900 shadow-2xl shadow-surface-900/20 dark:shadow-black/20 ring-1 ring-surface-800 dark:ring-surface-200 scale-[1.02] lg:scale-105"
           : "bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-lg"
       } ${isInView ? "animate-slide-up" : "opacity-0"}`}
       style={{ animationDelay: delay }}

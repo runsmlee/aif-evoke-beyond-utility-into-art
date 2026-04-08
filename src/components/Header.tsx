@@ -96,7 +96,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
             className="flex items-center gap-2.5 group"
             aria-label="Evoke — Home"
           >
-            <div className="relative w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110 shadow-lg shadow-primary-500/20">
+            <div className="relative w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center transition-transform duration-200 group-hover:scale-110 group-hover:rotate-3 shadow-lg shadow-primary-500/20">
               <svg
                 width="18"
                 height="18"

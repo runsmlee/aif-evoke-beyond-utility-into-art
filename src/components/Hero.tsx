@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useInView } from "../hooks/useInView";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
@@ -19,9 +19,19 @@ function AnimatedCounter({ target, suffix, isInView }: { target: number; suffix:
   const [count, setCount] = useState(0);
   const prefersReducedMotion = useReducedMotion();
   const hasAnimated = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const animate = useCallback(() => {
+  useEffect(() => {
+    if (!isInView) return;
+
     if (hasAnimated.current) return;
+
+    if (prefersReducedMotion) {
+      setCount(target);
+      hasAnimated.current = true;
+      return;
+    }
+
     hasAnimated.current = true;
 
     const duration = 1500;
@@ -30,30 +40,20 @@ function AnimatedCounter({ target, suffix, isInView }: { target: number; suffix:
     let current = 0;
     const stepTime = duration / steps;
 
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       current += increment;
       if (current >= target) {
         setCount(target);
-        clearInterval(timer);
+        if (timerRef.current) clearInterval(timerRef.current);
       } else {
         setCount(Math.floor(current));
       }
     }, stepTime);
 
-    return () => clearInterval(timer);
-  }, [target]);
-
-  useEffect(() => {
-    if (isInView) {
-      if (prefersReducedMotion) {
-        setCount(target);
-        hasAnimated.current = true;
-      } else {
-        const cleanup = animate();
-        return cleanup;
-      }
-    }
-  }, [isInView, prefersReducedMotion, animate, target]);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [isInView, prefersReducedMotion, target]);
 
   return (
     <span>

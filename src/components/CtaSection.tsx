@@ -62,6 +62,7 @@ export function CtaSection() {
           className={`relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 p-8 sm:p-12 lg:p-16 noise-overlay ${
             isInView ? "animate-scale-in" : "opacity-0"
           }`}
+          style={{ boxShadow: "0 25px 50px -12px rgba(239, 68, 68, 0.25)" }}
         >
           {/* Decorative elements */}
           <div className="absolute inset-0" aria-hidden="true">
