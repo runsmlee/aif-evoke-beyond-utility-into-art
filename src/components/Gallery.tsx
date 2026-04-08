@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { useInView } from "../hooks/useInView";
+import { GalleryModal, type GalleryModalItem } from "./GalleryModal";
 
 interface GalleryItem {
   id: string;
@@ -7,6 +8,7 @@ interface GalleryItem {
   category: string;
   gradient: string;
   pattern: "circles" | "lines" | "dots" | "rings" | "grid" | "waves";
+  description: string;
 }
 
 const galleryItems: GalleryItem[] = [
@@ -16,6 +18,7 @@ const galleryItems: GalleryItem[] = [
     category: "Composition",
     gradient: "from-primary-400 to-rose-300",
     pattern: "circles",
+    description: "An exploration of visual harmony through layered circular forms. Each element resonates with its neighbors, creating a composition that feels both balanced and alive.",
   },
   {
     id: "motion-1",
@@ -23,6 +26,7 @@ const galleryItems: GalleryItem[] = [
     category: "Motion",
     gradient: "from-amber-400 to-primary-400",
     pattern: "lines",
+    description: "Capturing the essence of movement through parallel lines that shift and flow. This piece explores how directional energy creates a sense of perpetual motion.",
   },
   {
     id: "color-1",
@@ -30,6 +34,7 @@ const galleryItems: GalleryItem[] = [
     category: "Color Theory",
     gradient: "from-violet-400 to-primary-400",
     pattern: "dots",
+    description: "A study in color relationships and their emotional impact. The dot matrix creates a rhythmic pattern that shifts perception as the viewer's eye moves across the work.",
   },
   {
     id: "texture-1",
@@ -37,6 +42,7 @@ const galleryItems: GalleryItem[] = [
     category: "Texture",
     gradient: "from-primary-300 to-pink-300",
     pattern: "rings",
+    description: "Concentric rings of light create a tapestry of warmth and depth. This piece examines how simple geometric forms can generate rich, tactile visual experiences.",
   },
   {
     id: "space-1",
@@ -44,6 +50,7 @@ const galleryItems: GalleryItem[] = [
     category: "Space",
     gradient: "from-surface-300 to-surface-400",
     pattern: "grid",
+    description: "The power of emptiness. A precise grid reveals how the absence of content can be as expressive as its presence, inviting contemplation and quiet reflection.",
   },
   {
     id: "rhythm-1",
@@ -51,6 +58,7 @@ const galleryItems: GalleryItem[] = [
     category: "Rhythm",
     gradient: "from-primary-500 to-red-700",
     pattern: "waves",
+    description: "Flowing waveforms create a visual beat that pulses with energy. This piece translates musical rhythm into visual language, creating a synesthetic experience.",
   },
 ];
 
@@ -132,6 +140,7 @@ function PatternOverlay({ pattern }: { pattern: GalleryItem["pattern"] }) {
 
 export function Gallery() {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [selectedItem, setSelectedItem] = useState<GalleryModalItem | null>(null);
   const { ref, isInView } = useInView({ threshold: 0.05 });
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -172,6 +181,21 @@ export function Gallery() {
     },
     [categories],
   );
+
+  const openModal = useCallback((item: GalleryItem) => {
+    setSelectedItem({
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      gradient: item.gradient,
+      pattern: item.pattern,
+      description: item.description,
+    });
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setSelectedItem(null);
+  }, []);
 
   return (
     <section
@@ -254,6 +278,11 @@ export function Gallery() {
                 isInView ? "animate-scale-in" : "opacity-0"
               }`}
               style={{ animationDelay: `${0.08 * index}s` }}
+              onClick={() => openModal(item)}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(item); } }}
+              tabIndex={0}
+              role="button"
+              aria-label={`View details for ${item.title}`}
             >
               {/* Gradient Background */}
               <div
@@ -298,6 +327,11 @@ export function Gallery() {
           ))}
         </div>
       </div>
+
+      {/* Gallery Modal */}
+      {selectedItem && (
+        <GalleryModal item={selectedItem} onClose={closeModal} />
+      )}
     </section>
   );
 }

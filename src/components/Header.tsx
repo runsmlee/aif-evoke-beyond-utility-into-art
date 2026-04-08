@@ -10,6 +10,29 @@ interface HeaderProps {
 export function Header({ theme, toggleTheme }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+
+  // Track active section for nav highlighting
+  useEffect(() => {
+    const sectionIds = ["features", "gallery", "pricing", "testimonials"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: "-20% 0px -70% 0px" },
+    );
+
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,10 +74,10 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
   }, [mobileMenuOpen, closeMenu]);
 
   const navLinks = [
-    { label: "Features", href: "#features" },
-    { label: "Gallery", href: "#gallery" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "Voices", href: "#testimonials" },
+    { label: "Features", href: "#features", id: "features" },
+    { label: "Gallery", href: "#gallery", id: "gallery" },
+    { label: "Pricing", href: "#pricing", id: "pricing" },
+    { label: "Voices", href: "#testimonials", id: "testimonials" },
   ];
 
   return (
@@ -101,9 +124,17 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
               <a
                 key={link.href}
                 href={link.href}
-                className="px-3.5 py-2 text-sm font-medium text-surface-600 dark:text-surface-300 hover:text-primary-500 dark:hover:text-primary-400 rounded-lg hover:bg-primary-50/50 dark:hover:bg-primary-900/20 transition-all duration-200"
+                className={`relative px-3.5 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  activeSection === link.id
+                    ? "text-primary-500 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20"
+                    : "text-surface-600 dark:text-surface-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-50/50 dark:hover:bg-primary-900/20"
+                }`}
+                aria-current={activeSection === link.id ? "true" : undefined}
               >
                 {link.label}
+                {activeSection === link.id && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary-500 rounded-full" aria-hidden="true" />
+                )}
               </a>
             ))}
           </nav>

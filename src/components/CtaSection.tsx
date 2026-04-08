@@ -1,18 +1,51 @@
 import { useState, useCallback } from "react";
 import { useInView } from "../hooks/useInView";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validateEmail(email: string): string | null {
+  if (!email.trim()) return "Email address is required";
+  if (!EMAIL_REGEX.test(email)) return "Please enter a valid email address";
+  return null;
+}
+
 export function CtaSection() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [touched, setTouched] = useState(false);
+
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setEmail(value);
+      if (touched) {
+        setError(value.trim() ? null : validateEmail(value));
+      }
+    },
+    [touched],
+  );
+
+  const handleBlur = useCallback(() => {
+    setTouched(true);
+    if (email.trim()) {
+      setError(validateEmail(email));
+    }
+  }, [email]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      if (email.trim() && email.includes("@")) {
-        setSubmitted(true);
-        setEmail("");
+      setTouched(true);
+      const validationError = validateEmail(email);
+      if (validationError) {
+        setError(validationError);
+        return;
       }
+      setSubmitted(true);
+      setEmail("");
+      setError(null);
     },
     [email],
   );
@@ -78,19 +111,37 @@ export function CtaSection() {
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <label htmlFor="cta-email" className="sr-only">
-                    Email address
-                  </label>
-                  <input
-                    id="cta-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                    className="flex-1 px-4 py-3.5 text-surface-900 placeholder-surface-400 bg-white rounded-xl border-0 focus:ring-2 focus:ring-white focus:outline-none text-sm sm:text-base"
-                    aria-label="Email address for signup"
-                  />
+                  <div className="flex-1">
+                    <label htmlFor="cta-email" className="sr-only">
+                      Email address
+                    </label>
+                    <input
+                      id="cta-email"
+                      type="email"
+                      value={email}
+                      onChange={handleEmailChange}
+                      onBlur={handleBlur}
+                      placeholder="Enter your email"
+                      required
+                      aria-invalid={error ? "true" : undefined}
+                      aria-describedby={error ? "cta-email-error" : undefined}
+                      className={`w-full px-4 py-3.5 text-surface-900 placeholder-surface-400 bg-white rounded-xl border-0 focus:ring-2 focus:outline-none text-sm sm:text-base transition-colors duration-200 ${
+                        error
+                          ? "focus:ring-red-300 ring-2 ring-red-400"
+                          : "focus:ring-white"
+                      }`}
+                      aria-label="Email address for signup"
+                    />
+                    {error && (
+                      <p
+                        id="cta-email-error"
+                        className="mt-1.5 text-xs text-red-200 text-left pl-1"
+                        role="alert"
+                      >
+                        {error}
+                      </p>
+                    )}
+                  </div>
                   <button
                     type="submit"
                     className="px-6 py-3.5 text-sm sm:text-base font-semibold text-primary-600 bg-white rounded-xl hover:bg-surface-50 transition-all duration-200 shadow-lg shadow-primary-900/30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 whitespace-nowrap"

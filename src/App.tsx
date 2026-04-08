@@ -8,8 +8,14 @@ import { useTheme } from "./hooks/useTheme";
 const Header = lazy(() =>
   import("./components/Header").then((m) => ({ default: m.Header }))
 );
+const LogoCloud = lazy(() =>
+  import("./components/LogoCloud").then((m) => ({ default: m.LogoCloud }))
+);
 const Features = lazy(() =>
   import("./components/Features").then((m) => ({ default: m.Features }))
+);
+const HowItWorks = lazy(() =>
+  import("./components/HowItWorks").then((m) => ({ default: m.HowItWorks }))
 );
 const Gallery = lazy(() =>
   import("./components/Gallery").then((m) => ({ default: m.Gallery }))
@@ -21,6 +27,9 @@ const Testimonials = lazy(() =>
 );
 const Pricing = lazy(() =>
   import("./components/Pricing").then((m) => ({ default: m.Pricing }))
+);
+const Faq = lazy(() =>
+  import("./components/Faq").then((m) => ({ default: m.Faq }))
 );
 const CtaSection = lazy(() =>
   import("./components/CtaSection").then((m) => ({ default: m.CtaSection }))
@@ -59,7 +68,17 @@ export function App() {
         <Hero />
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader />}>
+            <LogoCloud />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader />}>
             <Features />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader />}>
+            <HowItWorks />
           </Suspense>
         </ErrorBoundary>
         <ErrorBoundary>
@@ -75,6 +94,11 @@ export function App() {
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader />}>
             <Testimonials />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader />}>
+            <Faq />
           </Suspense>
         </ErrorBoundary>
         <ErrorBoundary>

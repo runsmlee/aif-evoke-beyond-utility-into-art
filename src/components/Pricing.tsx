@@ -1,22 +1,26 @@
+import { useState, useCallback } from "react";
 import { useInView } from "../hooks/useInView";
+
+type Billing = "monthly" | "annual";
 
 interface PricingTier {
   id: string;
   name: string;
-  price: string;
-  period: string;
+  price: Record<Billing, string>;
+  period: Record<Billing, string>;
   description: string;
   features: string[];
   cta: string;
   highlighted: boolean;
+  badge?: string;
 }
 
 const tiers: PricingTier[] = [
   {
     id: "starter",
     name: "Starter",
-    price: "Free",
-    period: "",
+    price: { monthly: "Free", annual: "Free" },
+    period: { monthly: "", annual: "" },
     description: "Perfect for exploring your creative potential.",
     features: [
       "5 creative projects",
@@ -30,8 +34,8 @@ const tiers: PricingTier[] = [
   {
     id: "pro",
     name: "Pro",
-    price: "$19",
-    period: "/month",
+    price: { monthly: "$19", annual: "$15" },
+    period: { monthly: "/month", annual: "/mo, billed annually" },
     description: "For creators ready to push boundaries.",
     features: [
       "Unlimited projects",
@@ -43,12 +47,13 @@ const tiers: PricingTier[] = [
     ],
     cta: "Start Creating",
     highlighted: true,
+    badge: "Most Popular",
   },
   {
     id: "studio",
     name: "Studio",
-    price: "$49",
-    period: "/month",
+    price: { monthly: "$49", annual: "$39" },
+    period: { monthly: "/month", annual: "/mo, billed annually" },
     description: "For teams crafting at the highest level.",
     features: [
       "Everything in Pro",
@@ -67,9 +72,15 @@ interface PricingCardProps {
   tier: PricingTier;
   isInView: boolean;
   delay: string;
+  billing: Billing;
 }
 
-function PricingCard({ tier, isInView, delay }: PricingCardProps) {
+function PricingCard({ tier, isInView, delay, billing }: PricingCardProps) {
+  const price = tier.price[billing];
+  const period = tier.period[billing];
+  const showSavings = billing === "annual" && tier.id === "pro";
+  const showStudioSavings = billing === "annual" && tier.id === "studio";
+
   return (
     <div
       className={`relative flex flex-col rounded-2xl p-6 sm:p-8 transition-all duration-300 ${
@@ -82,7 +93,15 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
       {tier.highlighted && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="inline-flex items-center px-3 py-1 text-xs font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-full shadow-md">
-            Most Popular
+            {tier.badge}
+          </span>
+        </div>
+      )}
+
+      {(showSavings || showStudioSavings) && !tier.highlighted && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+          <span className="inline-flex items-center px-3 py-1 text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 rounded-full">
+            Save {tier.id === "pro" ? "20%" : "20%"}
           </span>
         </div>
       )}
@@ -101,15 +120,15 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
               tier.highlighted ? "text-white dark:text-surface-900" : "text-surface-900 dark:text-white"
             }`}
           >
-            {tier.price}
+            {price}
           </span>
-          {tier.period && (
+          {period && (
             <span
               className={`text-sm font-medium ${
                 tier.highlighted ? "text-surface-400 dark:text-surface-500" : "text-surface-500 dark:text-surface-400"
               }`}
             >
-              {tier.period}
+              {period}
             </span>
           )}
         </div>
@@ -166,6 +185,11 @@ function PricingCard({ tier, isInView, delay }: PricingCardProps) {
 
 export function Pricing() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
+  const [billing, setBilling] = useState<Billing>("monthly");
+
+  const toggleBilling = useCallback(() => {
+    setBilling((prev) => (prev === "monthly" ? "annual" : "monthly"));
+  }, []);
 
   return (
     <section
@@ -202,6 +226,54 @@ export function Pricing() {
             Simple, transparent pricing. No hidden fees, no surprises.
             Start free and scale as you grow.
           </p>
+
+          {/* Billing toggle */}
+          <div
+            className={`mt-8 flex items-center justify-center gap-3 ${
+              isInView ? "animate-fade-in" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.2s" }}
+          >
+            <span
+              className={`text-sm font-medium ${
+                billing === "monthly"
+                  ? "text-surface-900 dark:text-white"
+                  : "text-surface-400 dark:text-surface-500"
+              }`}
+            >
+              Monthly
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={billing === "annual"}
+              aria-label="Toggle annual billing"
+              onClick={toggleBilling}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-950 ${
+                billing === "annual" ? "bg-primary-500" : "bg-surface-300 dark:bg-surface-600"
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 shadow-sm ${
+                  billing === "annual" ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+            <span
+              className={`text-sm font-medium ${
+                billing === "annual"
+                  ? "text-surface-900 dark:text-white"
+                  : "text-surface-400 dark:text-surface-500"
+              }`}
+            >
+              Annual
+            </span>
+            {billing === "annual" && (
+              <span className="text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 px-2 py-0.5 rounded-full">
+                Save 20%
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Pricing Grid */}
@@ -212,6 +284,7 @@ export function Pricing() {
               tier={tier}
               isInView={isInView}
               delay={`${index * 0.1}s`}
+              billing={billing}
             />
           ))}
         </div>

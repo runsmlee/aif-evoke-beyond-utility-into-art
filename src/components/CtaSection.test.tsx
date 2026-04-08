@@ -42,4 +42,26 @@ describe("CtaSection", () => {
     // Submit button should still be visible
     expect(screen.getByText("Get Started Free")).toBeDefined();
   });
+
+  it("shows validation error for invalid email on submit", () => {
+    render(<CtaSection />);
+    const input = screen.getByLabelText("Email address for signup");
+    const submitButton = screen.getByText("Get Started Free");
+
+    fireEvent.change(input, { target: { value: "invalid-email" } });
+    fireEvent.click(submitButton);
+
+    expect(screen.getByText(/valid email address/i)).toBeDefined();
+    expect(screen.queryByText(/Welcome aboard/i)).toBeNull();
+  });
+
+  it("shows required error for empty submit", () => {
+    render(<CtaSection />);
+    const submitButton = screen.getByText("Get Started Free");
+
+    fireEvent.click(submitButton);
+
+    expect(screen.getByRole("alert")).toBeDefined();
+    expect(screen.getByRole("alert").textContent).toContain("required");
+  });
 });

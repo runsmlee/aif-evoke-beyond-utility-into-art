@@ -73,4 +73,29 @@ describe("Gallery", () => {
     expect(activeTab).toHaveAttribute("tabIndex", "0");
     expect(tabs[1]).toHaveAttribute("tabIndex", "-1");
   });
+
+  it("opens modal when a gallery item is clicked", () => {
+    render(<Gallery />);
+
+    const firstItem = screen.getByLabelText("View details for Harmonic Resonance");
+    fireEvent.click(firstItem);
+
+    // Modal should appear with the artwork details
+    const titles = screen.getAllByText("Harmonic Resonance");
+    expect(titles.length).toBeGreaterThanOrEqual(2); // One in gallery grid, one in modal
+    expect(screen.getByText(/exploration of visual harmony/i)).toBeDefined();
+    expect(screen.getByLabelText("Close modal")).toBeDefined();
+  });
+
+  it("closes modal when close button is clicked", () => {
+    render(<Gallery />);
+
+    const firstItem = screen.getByLabelText("View details for Harmonic Resonance");
+    fireEvent.click(firstItem);
+
+    const closeButton = screen.getByLabelText("Close modal");
+    fireEvent.click(closeButton);
+
+    expect(screen.queryByLabelText("Close modal")).toBeNull();
+  });
 });

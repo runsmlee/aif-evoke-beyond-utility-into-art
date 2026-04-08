@@ -254,6 +254,44 @@ body {
   animation: fade-scale 0.35s ease-out both;
 }
 
+/* Animated gradient border for highlighted pricing */
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.animated-border {
+  position: relative;
+  background: transparent;
+}
+
+.animated-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    #EF4444,
+    #f97316,
+    #EF4444,
+    #f97316,
+    #EF4444
+  );
+  z-index: -1;
+  animation: gradient-rotate 4s linear infinite;
+}
+
+@keyframes gradient-rotate {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
 /* Dark mode transitions */
 .dark-transition {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.15s ease, box-shadow 0.3s ease;
