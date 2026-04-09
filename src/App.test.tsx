@@ -20,6 +20,11 @@ describe("App", () => {
     expect(screen.getByText("Explore Evoke")).toBeDefined();
   });
 
+  it("renders the 'Try the Demo' CTA link", () => {
+    render(<App />);
+    expect(screen.getByText("Try the Demo")).toBeDefined();
+  });
+
   it("has a main content landmark", () => {
     render(<App />);
     const main = screen.getByRole("main");
@@ -52,6 +57,22 @@ describe("App", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/creative craft/i)).toBeDefined();
+    });
+  });
+
+  it("renders the Philosophy section after lazy load", async () => {
+    render(<App />);
+    await waitFor(() => {
+      expect(screen.getByText(/Our Philosophy/i)).toBeDefined();
+    });
+  });
+
+  it("renders the Interactive Demo section after lazy load", async () => {
+    render(<App />);
+    await waitFor(() => {
+      // "Create your" heading text is split across elements, so use heading role
+      const demoHeading = document.getElementById("demo-heading");
+      expect(demoHeading).not.toBeNull();
     });
   });
 });

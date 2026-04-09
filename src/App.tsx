@@ -14,11 +14,17 @@ const LogoCloud = lazy(() =>
 const Features = lazy(() =>
   import("./components/Features").then((m) => ({ default: m.Features }))
 );
+const Philosophy = lazy(() =>
+  import("./components/Philosophy").then((m) => ({ default: m.Philosophy }))
+);
 const HowItWorks = lazy(() =>
   import("./components/HowItWorks").then((m) => ({ default: m.HowItWorks }))
 );
 const Gallery = lazy(() =>
   import("./components/Gallery").then((m) => ({ default: m.Gallery }))
+);
+const InteractiveDemo = lazy(() =>
+  import("./components/InteractiveDemo").then((m) => ({ default: m.InteractiveDemo }))
 );
 const Testimonials = lazy(() =>
   import("./components/Testimonials").then((m) => ({
@@ -78,12 +84,22 @@ export function App() {
         </ErrorBoundary>
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader />}>
+            <Philosophy />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader />}>
             <HowItWorks />
           </Suspense>
         </ErrorBoundary>
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader />}>
             <Gallery />
+          </Suspense>
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <Suspense fallback={<SectionLoader />}>
+            <InteractiveDemo />
           </Suspense>
         </ErrorBoundary>
         <ErrorBoundary>
