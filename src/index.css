@@ -330,3 +330,25 @@ body {
 .dark-transition {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.15s ease, box-shadow 0.3s ease;
 }
+
+/* Gallery filter transition */
+.gallery-grid-transition {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Gradient text shimmer enhancement */
+.gradient-text-shimmer {
+  background: linear-gradient(
+    135deg,
+    #EF4444 0%,
+    #f97316 25%,
+    #EF4444 50%,
+    #f97316 75%,
+    #EF4444 100%
+  );
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-shift 4s ease-in-out infinite;
+}

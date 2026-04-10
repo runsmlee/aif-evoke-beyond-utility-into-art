@@ -136,6 +136,8 @@ export function HowItWorks() {
                   <div className="w-12 h-12 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 group-hover:shadow-xl group-hover:shadow-primary-500/30 transition-transform duration-300">
                     <span className="text-sm font-bold">{step.number}</span>
                   </div>
+                  {/* Pulse ring */}
+                  <div className="absolute inset-0 rounded-full border-2 border-primary-300 dark:border-primary-700 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500" aria-hidden="true" />
                 </div>
 
                 <div className="md:mt-5">

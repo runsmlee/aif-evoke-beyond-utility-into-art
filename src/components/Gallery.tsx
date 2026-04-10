@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useInView } from "../hooks/useInView";
 import { GalleryModal, type GalleryModalItem } from "./GalleryModal";
 
@@ -141,6 +141,7 @@ function PatternOverlay({ pattern }: { pattern: GalleryItem["pattern"] }) {
 export function Gallery() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedItem, setSelectedItem] = useState<GalleryModalItem | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const { ref, isInView } = useInView({ threshold: 0.05 });
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -149,6 +150,13 @@ export function Gallery() {
     activeFilter === "All"
       ? galleryItems
       : galleryItems.filter((item) => item.category === activeFilter);
+
+  // Animate transition when filter changes
+  useEffect(() => {
+    setIsTransitioning(true);
+    const timer = setTimeout(() => setIsTransitioning(false), 50);
+    return () => clearTimeout(timer);
+  }, [activeFilter]);
 
   const handleFilter = useCallback((category: string) => {
     setActiveFilter(category);
@@ -267,7 +275,9 @@ export function Gallery() {
 
         {/* Gallery Grid */}
         <div
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-300 ${
+            isTransitioning ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
+          }`}
           role="tabpanel"
           aria-label="Gallery items"
         >

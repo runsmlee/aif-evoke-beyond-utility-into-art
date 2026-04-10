@@ -57,6 +57,7 @@ function InteractiveDemo() {
   const [activeColors, setActiveColors] = useState<ColorSwatch[]>(basePalettes[0]!);
   const [gradientAngle, setGradientAngle] = useState(135);
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
+  const [copiedCss, setCopiedCss] = useState(false);
 
   const gradient = useMemo(
     () => generateGradient(activeColors.map((c) => c.hex), gradientAngle),
@@ -323,11 +324,24 @@ function InteractiveDemo() {
                   type="button"
                   onClick={() => {
                     navigator.clipboard.writeText(`background: ${gradient};`).catch(() => {});
+                    setCopiedCss(true);
+                    setTimeout(() => setCopiedCss(false), 1500);
                   }}
-                  className="absolute top-3 right-3 px-2 py-1 text-xs font-medium text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400 transition-colors duration-200"
+                  className="absolute top-3 right-3 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1"
                   aria-label="Copy CSS to clipboard"
                 >
-                  Copy
+                  {copiedCss ? (
+                    <span className="text-primary-600 dark:text-primary-400 flex items-center gap-1 animate-fade-in">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      Copied!
+                    </span>
+                  ) : (
+                    <span className="text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400">
+                      Copy
+                    </span>
+                  )}
                 </button>
               </div>
             </div>

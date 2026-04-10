@@ -51,3 +51,6 @@ const localStorageMock = (() => {
 Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
+
+// Mock HTMLCanvasElement.getContext to suppress warnings
+HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue(null);

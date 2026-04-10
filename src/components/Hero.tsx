@@ -15,6 +15,8 @@ const stats: StatItem[] = [
   { value: "99%", numericValue: 99, suffix: "%", label: "Satisfaction Rate" },
 ];
 
+const rotatingWords = ["Art", "Experience", "Emotion", "Expression", "Craft"];
+
 interface Particle {
   x: number;
   y: number;
@@ -23,6 +25,40 @@ interface Particle {
   size: number;
   opacity: number;
   hue: number;
+}
+
+function RotatingWord({ words, interval = 3000 }: { words: string[]; interval?: number }) {
+  const [index, setIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (prefersReducedMotion || words.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % words.length);
+        setIsTransitioning(false);
+      }, 300);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [words.length, interval, prefersReducedMotion]);
+
+  return (
+    <span
+      className="gradient-text inline-block transition-all duration-300"
+      style={{
+        opacity: isTransitioning ? 0 : 1,
+        transform: isTransitioning ? "translateY(8px)" : "translateY(0)",
+      }}
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      {words[index] ?? words[0]}
+    </span>
+  );
 }
 
 function AnimatedCounter({ target, suffix, isInView }: { target: number; suffix: string; isInView: boolean }) {
@@ -265,7 +301,7 @@ export function Hero() {
             }`}
           >
             Beyond Utility,{" "}
-            <span className="gradient-text">Into Art</span>
+            <span className="gradient-text">Into <RotatingWord words={rotatingWords} /></span>
           </h1>
 
           {/* Subtitle */}
