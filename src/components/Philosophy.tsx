@@ -34,18 +34,18 @@ function Philosophy() {
   const animationFrameRef = useRef<number>(0);
   const particlesRef = useRef<Array<{ x: number; y: number; vx: number; vy: number; size: number; opacity: number }>>([]);
 
-  // Subtle floating particle system
+  // Subtle floating particle system - optimized for performance
   const initParticles = useCallback((width: number, height: number) => {
-    const count = Math.min(30, Math.floor((width * height) / 20000));
+    const count = Math.min(20, Math.floor((width * height) / 25000)); // Reduced particle count
     const particles: typeof particlesRef.current = [];
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
         size: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.15 + 0.05,
+        opacity: Math.random() * 0.12 + 0.04,
       });
     }
     particlesRef.current = particles;

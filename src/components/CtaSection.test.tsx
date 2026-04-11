@@ -64,4 +64,25 @@ describe("CtaSection", () => {
     expect(screen.getByRole("alert")).toBeDefined();
     expect(screen.getByRole("alert").textContent).toContain("required");
   });
+
+  it("clears error as user corrects email after touched", () => {
+    render(<CtaSection />);
+    const input = screen.getByLabelText("Email address for signup");
+    const submitButton = screen.getByText("Get Started Free");
+
+    // Submit invalid to trigger error
+    fireEvent.change(input, { target: { value: "bad" } });
+    fireEvent.click(submitButton);
+    expect(screen.getByText(/valid email address/i)).toBeDefined();
+
+    // Fix the email - error should clear
+    fireEvent.change(input, { target: { value: "good@example.com" } });
+    expect(screen.queryByText(/valid email address/i)).toBeNull();
+  });
+
+  it("has a contact section with correct id", () => {
+    render(<CtaSection />);
+    const section = document.getElementById("contact");
+    expect(section).not.toBeNull();
+  });
 });

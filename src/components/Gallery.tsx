@@ -289,7 +289,7 @@ export function Gallery() {
           {filteredItems.map((item, index) => (
             <article
               key={item.id}
-              className={`group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 gallery-item-enter ${
+              className={`group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 gallery-item-enter focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none ${
                 isInView ? "animate-scale-in" : "opacity-0"
               }`}
               style={{ animationDelay: `${0.08 * index}s` }}

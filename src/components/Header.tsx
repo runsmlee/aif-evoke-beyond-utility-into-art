@@ -62,11 +62,39 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
     setMobileMenuOpen(false);
   }, []);
 
-  // Close mobile menu on Escape key
+  // Close mobile menu on Escape key + focus trapping
   useEffect(() => {
+    if (!mobileMenuOpen) return;
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && mobileMenuOpen) {
+      if (e.key === "Escape") {
         closeMenu();
+        return;
+      }
+
+      // Focus trap within mobile menu
+      if (e.key === "Tab") {
+        const menu = document.getElementById("mobile-menu");
+        if (!menu) return;
+        const focusable = menu.querySelectorAll<HTMLElement>(
+          'a[href], button, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0]!;
+        const last = focusable[focusable.length - 1]!;
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       }
     };
     document.addEventListener("keydown", handleKeyDown);

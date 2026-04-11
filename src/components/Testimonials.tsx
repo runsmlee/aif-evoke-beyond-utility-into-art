@@ -1,4 +1,6 @@
+import { useState, useEffect, useCallback } from "react";
 import { useInView } from "../hooks/useInView";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 interface Testimonial {
   id: string;
@@ -41,6 +43,27 @@ const testimonials: Testimonial[] = [
 
 export function Testimonials() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
+  const [activeIndex, setActiveIndex] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Auto-rotate testimonials on mobile for engagement
+  useEffect(() => {
+    if (prefersReducedMotion || !isInView) return;
+
+    // Only auto-rotate on narrow screens (mobile)
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    if (!mediaQuery.matches) return;
+
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [isInView, prefersReducedMotion]);
+
+  const handleDotClick = useCallback((index: number) => {
+    setActiveIndex(index);
+  }, []);
 
   return (
     <section
@@ -133,6 +156,25 @@ export function Testimonials() {
                 </div>
               </footer>
             </blockquote>
+          ))}
+        </div>
+
+        {/* Mobile carousel dots */}
+        <div className="flex items-center justify-center gap-2 mt-8 md:hidden" role="tablist" aria-label="Testimonial navigation">
+          {testimonials.map((testimonial, i) => (
+            <button
+              key={testimonial.id}
+              type="button"
+              role="tab"
+              aria-selected={activeIndex === i}
+              aria-label={`View testimonial from ${testimonial.author}`}
+              onClick={() => handleDotClick(i)}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                activeIndex === i
+                  ? "bg-primary-400 w-8"
+                  : "bg-surface-600 hover:bg-surface-500"
+              }`}
+            />
           ))}
         </div>
       </div>

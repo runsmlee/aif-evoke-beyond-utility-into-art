@@ -98,4 +98,42 @@ describe("Gallery", () => {
 
     expect(screen.queryByLabelText("Close modal")).toBeNull();
   });
+
+  it("opens modal when Enter key is pressed on gallery item", () => {
+    render(<Gallery />);
+
+    const firstItem = screen.getByLabelText("View details for Harmonic Resonance");
+    fireEvent.keyDown(firstItem, { key: "Enter" });
+
+    const titles = screen.getAllByText("Harmonic Resonance");
+    expect(titles.length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByLabelText("Close modal")).toBeDefined();
+  });
+
+  it("opens modal when Space key is pressed on gallery item", () => {
+    render(<Gallery />);
+
+    const firstItem = screen.getByLabelText("View details for Harmonic Resonance");
+    fireEvent.keyDown(firstItem, { key: " " });
+
+    const titles = screen.getAllByText("Harmonic Resonance");
+    expect(titles.length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByLabelText("Close modal")).toBeDefined();
+  });
+
+  it("gallery items have correct role and tabIndex for keyboard navigation", () => {
+    render(<Gallery />);
+
+    const items = screen.getAllByRole("button", { name: /View details for/ });
+    expect(items.length).toBe(6);
+    items.forEach((item) => {
+      expect(item).toHaveAttribute("tabIndex", "0");
+    });
+  });
+
+  it("has the gallery section with correct id", () => {
+    render(<Gallery />);
+    const section = document.getElementById("gallery");
+    expect(section).not.toBeNull();
+  });
 });

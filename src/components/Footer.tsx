@@ -78,6 +78,8 @@ export function Footer() {
               Beyond utility, into art. Crafting digital experiences that inspire
               and delight.
             </p>
+            {/* Visually hidden heading for screen reader landmark */}
+            <h2 className="sr-only">Evoke brand and newsletter</h2>
             {/* Social icons */}
             <div className="mt-4 flex items-center gap-3">
               <a

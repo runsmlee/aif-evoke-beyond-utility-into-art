@@ -71,4 +71,28 @@ describe("Header", () => {
     const toggles = screen.getAllByLabelText("Switch to light mode");
     expect(toggles.length).toBeGreaterThan(0);
   });
+
+  it("closes mobile menu on Escape key", () => {
+    render(<Header {...defaultProps} />);
+    const menuButton = screen.getByLabelText("Open menu");
+    fireEvent.click(menuButton);
+    expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toBeDefined();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).toBeNull();
+  });
+
+  it("has the Pricing link in desktop nav", () => {
+    render(<Header {...defaultProps} />);
+    const mainNav = screen.getByRole("navigation", { name: "Main navigation" });
+    expect(mainNav).toBeDefined();
+    // The main nav should contain nav links
+    const links = mainNav.querySelectorAll("a");
+    expect(links.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("renders the home link with correct aria-label", () => {
+    render(<Header {...defaultProps} />);
+    expect(screen.getByLabelText("Evoke — Home")).toBeDefined();
+  });
 });

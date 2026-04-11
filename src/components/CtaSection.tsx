@@ -21,7 +21,9 @@ export function CtaSection() {
       const value = e.target.value;
       setEmail(value);
       if (touched) {
-        setError(value.trim() ? null : validateEmail(value));
+        // Clear error as user fixes it
+        const validationError = validateEmail(value);
+        setError(validationError);
       }
     },
     [touched],

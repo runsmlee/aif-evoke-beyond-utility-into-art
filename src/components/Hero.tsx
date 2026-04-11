@@ -137,7 +137,7 @@ export function Hero() {
     particlesRef.current = particles;
   }, []);
 
-  // Canvas animation
+  // Canvas animation with frame throttling for performance
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || prefersReducedMotion) return;
@@ -145,17 +145,21 @@ export function Hero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let resizeTimeout: ReturnType<typeof setTimeout>;
     const resizeCanvas = () => {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-      const rect = parent.getBoundingClientRect();
-      const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
-      ctx.scale(dpr, dpr);
-      initParticles(rect.width, rect.height);
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        const parent = canvas.parentElement;
+        if (!parent) return;
+        const rect = parent.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR for performance
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        initParticles(rect.width, rect.height);
+      }, 100);
     };
 
     resizeCanvas();
@@ -171,20 +175,37 @@ export function Hero() {
 
     canvas.addEventListener("mousemove", handleMouseMove);
 
-    const animate = () => {
+    // Throttle to ~30fps on mobile for better performance
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const targetInterval = isMobile ? 33 : 16; // ~30fps mobile, ~60fps desktop
+    let lastFrameTime = 0;
+
+    const animate = (timestamp: number) => {
       if (!ctx || !canvas) return;
-      const w = canvas.width / (window.devicePixelRatio || 1);
-      const h = canvas.height / (window.devicePixelRatio || 1);
+
+      const elapsed = timestamp - lastFrameTime;
+      if (elapsed < targetInterval) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      lastFrameTime = timestamp - (elapsed % targetInterval);
+
+      const w = canvas.width / (Math.min(window.devicePixelRatio || 1, 2));
+      const h = canvas.height / (Math.min(window.devicePixelRatio || 1, 2));
       ctx.clearRect(0, 0, w, h);
 
       const mouse = mouseRef.current;
+      const particles = particlesRef.current;
 
-      for (const p of particlesRef.current) {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i]!;
+
         // Subtle mouse attraction
         const dx = mouse.x - p.x;
         const dy = mouse.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 150 && dist > 0) {
+        const distSq = dx * dx + dy * dy;
+        if (distSq < 22500 && distSq > 0) { // 150^2
+          const dist = Math.sqrt(distSq);
           const force = (150 - dist) / 150 * 0.02;
           p.vx += (dx / dist) * force;
           p.vy += (dy / dist) * force;
@@ -209,17 +230,18 @@ export function Hero() {
         ctx.fill();
       }
 
-      // Draw connections between close particles
-      const maxDist = 100;
-      for (let i = 0; i < particlesRef.current.length; i++) {
-        const a = particlesRef.current[i]!;
-        for (let j = i + 1; j < particlesRef.current.length; j++) {
-          const b = particlesRef.current[j]!;
+      // Draw connections between close particles (optimized with squared distance)
+      const maxDistSq = 10000; // 100^2
+      for (let i = 0; i < particles.length; i++) {
+        const a = particles[i]!;
+        for (let j = i + 1; j < particles.length; j++) {
+          const b = particles[j]!;
           const dx = a.x - b.x;
           const dy = a.y - b.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < maxDist) {
-            const alpha = (1 - dist / maxDist) * 0.08;
+          const distSq = dx * dx + dy * dy;
+          if (distSq < maxDistSq) {
+            const dist = Math.sqrt(distSq);
+            const alpha = (1 - dist / 100) * 0.08;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
@@ -233,9 +255,10 @@ export function Hero() {
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
+      clearTimeout(resizeTimeout);
       window.removeEventListener("resize", resizeCanvas);
       canvas.removeEventListener("mousemove", handleMouseMove);
       cancelAnimationFrame(animationFrameRef.current);

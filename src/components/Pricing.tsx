@@ -191,6 +191,10 @@ export function Pricing() {
     setBilling((prev) => (prev === "monthly" ? "annual" : "monthly"));
   }, []);
 
+  const selectBilling = useCallback((b: Billing) => {
+    setBilling(b);
+  }, []);
+
   return (
     <section
       id="pricing"
@@ -234,15 +238,18 @@ export function Pricing() {
             }`}
             style={{ animationDelay: "0.2s" }}
           >
-            <span
-              className={`text-sm font-medium ${
+            <button
+              type="button"
+              onClick={() => selectBilling("monthly")}
+              className={`text-sm font-medium cursor-pointer transition-colors duration-200 ${
                 billing === "monthly"
                   ? "text-surface-900 dark:text-white"
-                  : "text-surface-400 dark:text-surface-500"
+                  : "text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300"
               }`}
+              aria-label="Select monthly billing"
             >
               Monthly
-            </span>
+            </button>
             <button
               type="button"
               role="switch"
@@ -259,15 +266,18 @@ export function Pricing() {
                 }`}
               />
             </button>
-            <span
-              className={`text-sm font-medium ${
+            <button
+              type="button"
+              onClick={() => selectBilling("annual")}
+              className={`text-sm font-medium cursor-pointer transition-colors duration-200 ${
                 billing === "annual"
                   ? "text-surface-900 dark:text-white"
-                  : "text-surface-400 dark:text-surface-500"
+                  : "text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300"
               }`}
+              aria-label="Select annual billing"
             >
               Annual
-            </span>
+            </button>
             {billing === "annual" && (
               <span className="text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 px-2 py-0.5 rounded-full">
                 Save 20%
