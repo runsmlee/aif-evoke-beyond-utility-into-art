@@ -1,12 +1,13 @@
 {
   "name": "mvp-v3-107aa278-e953-4037-a938-855be85aef5d-b53tpt",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "NODE_PATH=./node_modules vitest run"
   },
   "keywords": [],
   "author": "",
@@ -28,8 +29,8 @@
     "postcss": "^8.5.9",
     "tailwindcss": "^4.2.2",
     "typescript": "^6.0.2",
-    "vite": "^8.0.7",
-    "vitest": "^4.1.3"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "description": ""
 }

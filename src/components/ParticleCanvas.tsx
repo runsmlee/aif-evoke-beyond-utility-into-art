@@ -58,7 +58,7 @@ export function ParticleCanvas() {
     };
 
     resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("resize", resizeCanvas, { passive: true });
 
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
@@ -68,7 +68,7 @@ export function ParticleCanvas() {
       };
     };
 
-    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mousemove", handleMouseMove, { passive: true });
 
     const isMobile = window.matchMedia("(max-width: 768px)").matches;
     const targetInterval = isMobile ? 33 : 16;

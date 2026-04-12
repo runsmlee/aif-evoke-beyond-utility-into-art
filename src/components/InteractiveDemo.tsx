@@ -51,6 +51,8 @@ function generateGradient(colors: string[], angle: number): string {
   return `linear-gradient(${angle}deg, ${stops})`;
 }
 
+const anglePresets = [90, 135, 180, 225, 270];
+
 function InteractiveDemo() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
   const [selectedPalette, setSelectedPalette] = useState(0);
@@ -97,8 +99,6 @@ function InteractiveDemo() {
     setCopiedColor(hex);
     setTimeout(() => setCopiedColor(null), 1500);
   }, []);
-
-  const anglePresets = [90, 135, 180, 225, 270];
 
   return (
     <section

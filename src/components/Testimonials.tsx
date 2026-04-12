@@ -44,11 +44,13 @@ const testimonials: Testimonial[] = [
 export function Testimonials() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   // Auto-rotate testimonials on mobile for engagement
+  // Pauses on hover/focus for accessibility (WCAG 2.2)
   useEffect(() => {
-    if (prefersReducedMotion || !isInView) return;
+    if (prefersReducedMotion || !isInView || isPaused) return;
 
     // Only auto-rotate on narrow screens (mobile)
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -59,7 +61,7 @@ export function Testimonials() {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isInView, prefersReducedMotion]);
+  }, [isInView, prefersReducedMotion, isPaused]);
 
   const handleDotClick = useCallback((index: number) => {
     setActiveIndex(index);
@@ -109,7 +111,13 @@ export function Testimonials() {
         </div>
 
         {/* Testimonial Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocus={() => setIsPaused(true)}
+          onBlur={() => setIsPaused(false)}
+        >
           {testimonials.map((testimonial, index) => (
             <blockquote
               key={testimonial.id}

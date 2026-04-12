@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useRef, lazy, Suspense, memo } from "react";
 import { useInView } from "../hooks/useInView";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
@@ -21,7 +21,7 @@ const ParticleCanvas = lazy(() =>
   import("./ParticleCanvas").then((m) => ({ default: m.ParticleCanvas }))
 );
 
-function RotatingWord({ words, interval = 3000 }: { words: string[]; interval?: number }) {
+const RotatingWord = memo(function RotatingWord({ words, interval = 3000 }: { words: string[]; interval?: number }) {
   const [index, setIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const prefersReducedMotion = useReducedMotion();
@@ -53,9 +53,9 @@ function RotatingWord({ words, interval = 3000 }: { words: string[]; interval?: 
       {words[index] ?? words[0]}
     </span>
   );
-}
+});
 
-function AnimatedCounter({ target, suffix, isInView }: { target: number; suffix: string; isInView: boolean }) {
+const AnimatedCounter = memo(function AnimatedCounter({ target, suffix, isInView }: { target: number; suffix: string; isInView: boolean }) {
   const [count, setCount] = useState(0);
   const prefersReducedMotion = useReducedMotion();
   const hasAnimated = useRef(false);
@@ -101,7 +101,7 @@ function AnimatedCounter({ target, suffix, isInView }: { target: number; suffix:
       {suffix}
     </span>
   );
-}
+});
 
 export function Hero() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
