@@ -15,6 +15,17 @@
     <title>Evoke — Beyond Utility, Into Art</title>
   </head>
   <body class="antialiased">
+    <script>
+      // Prevent flash of wrong theme — runs before React hydration
+      (function() {
+        try {
+          var stored = localStorage.getItem('evoke-theme');
+          if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch(e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

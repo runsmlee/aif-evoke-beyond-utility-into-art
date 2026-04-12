@@ -47,10 +47,15 @@ const Footer = lazy(() =>
 function SectionLoader() {
   return (
     <div className="flex items-center justify-center py-20" aria-hidden="true">
-      <div className="flex gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: "0ms" }} />
-        <span className="w-2 h-2 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: "150ms" }} />
-        <span className="w-2 h-2 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+      <div className="w-full max-w-4xl mx-auto px-4 space-y-6">
+        <div className="h-4 w-32 rounded-full bg-surface-200/60 dark:bg-surface-700/60 animate-shimmer" style={{ backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.15) 50%, transparent 75%)" }} />
+        <div className="h-8 w-2/3 rounded-lg bg-surface-200/60 dark:bg-surface-700/60 animate-shimmer" style={{ backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.15) 50%, transparent 75%)" }} />
+        <div className="h-4 w-1/2 rounded-full bg-surface-200/40 dark:bg-surface-700/40 animate-shimmer" style={{ backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%)" }} />
+        <div className="grid grid-cols-3 gap-4 pt-4">
+          <div className="h-40 rounded-2xl bg-surface-200/40 dark:bg-surface-700/40 animate-shimmer" style={{ backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%)" }} />
+          <div className="h-40 rounded-2xl bg-surface-200/40 dark:bg-surface-700/40 animate-shimmer" style={{ animationDelay: "0.15s", backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%)" }} />
+          <div className="h-40 rounded-2xl bg-surface-200/40 dark:bg-surface-700/40 animate-shimmer" style={{ animationDelay: "0.3s", backgroundSize: "200% 100%", backgroundImage: "linear-gradient(90deg, transparent 25%, rgba(255,255,255,0.1) 50%, transparent 75%)" }} />
+        </div>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
     const sectionIds = ["features", "gallery", "pricing", "testimonials"];
     const observer = new IntersectionObserver(
       (entries) => {
+        // Find the most visible section
         for (const entry of entries) {
           if (entry.isIntersecting) {
             setActiveSection(entry.target.id);

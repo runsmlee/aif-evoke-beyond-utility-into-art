@@ -66,14 +66,14 @@ function FaqItemComponent({
         <button
           type="button"
           onClick={onToggle}
-          className="w-full flex items-center justify-between py-5 px-1 text-left text-base font-semibold text-surface-900 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-950 rounded-lg"
+          className="w-full flex items-center justify-between py-5 px-1 text-left text-base font-semibold text-surface-900 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-950 rounded-lg group"
           aria-expanded={isOpen}
           aria-controls={`${item.id}-panel`}
           id={`${item.id}-button`}
         >
           <span className="pr-4">{item.question}</span>
           <svg
-            className={`w-5 h-5 flex-shrink-0 text-surface-400 transition-transform duration-200 ${
+            className={`w-5 h-5 flex-shrink-0 text-surface-400 group-hover:text-primary-500 transition-transform duration-300 ${
               isOpen ? "rotate-180" : ""
             }`}
             viewBox="0 0 24 24"

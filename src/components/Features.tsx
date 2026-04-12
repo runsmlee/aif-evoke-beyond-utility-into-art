@@ -11,7 +11,7 @@ interface FeatureCardProps {
 function FeatureCard({ icon, title, description, delay, isInView }: FeatureCardProps) {
   return (
     <div
-      className={`group relative p-6 sm:p-8 bg-white dark:bg-surface-800 rounded-2xl border border-surface-200/80 dark:border-surface-700/80 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-xl hover:shadow-primary-500/5 hover:-translate-y-1 transition-all duration-300 ${
+      className={`group relative p-6 sm:p-8 bg-white dark:bg-surface-800 rounded-2xl border border-surface-200/80 dark:border-surface-700/80 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-xl hover:shadow-primary-500/5 hover:-translate-y-1 transition-all duration-300 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 dark:focus-within:ring-offset-surface-900 ${
         isInView ? "animate-slide-up" : "opacity-0"
       }`}
       style={{ animationDelay: delay }}
@@ -115,7 +115,7 @@ export function Features() {
     <section
       id="features"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-50/80 dark:bg-surface-900/50"
+      className="py-20 sm:py-28 bg-surface-50/80 dark:bg-surface-900/50 scroll-mt-20"
       aria-labelledby="features-heading"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

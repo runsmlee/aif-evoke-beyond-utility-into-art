@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
 import { useInView } from "../hooks/useInView";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
@@ -17,15 +17,9 @@ const stats: StatItem[] = [
 
 const rotatingWords = ["Art", "Experience", "Emotion", "Expression", "Craft"];
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  opacity: number;
-  hue: number;
-}
+const ParticleCanvas = lazy(() =>
+  import("./ParticleCanvas").then((m) => ({ default: m.ParticleCanvas }))
+);
 
 function RotatingWord({ words, interval = 3000 }: { words: string[]; interval?: number }) {
   const [index, setIndex] = useState(0);
@@ -113,157 +107,7 @@ export function Hero() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
   const [statsVisible, setStatsVisible] = useState(false);
   const statsRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationFrameRef = useRef<number>(0);
-  const particlesRef = useRef<Particle[]>([]);
-  const mouseRef = useRef({ x: 0, y: 0 });
   const prefersReducedMotion = useReducedMotion();
-
-  // Initialize particle system
-  const initParticles = useCallback((width: number, height: number) => {
-    const count = Math.min(50, Math.floor((width * height) / 15000));
-    const particles: Particle[] = [];
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        size: Math.random() * 3 + 1.5,
-        opacity: Math.random() * 0.3 + 0.1,
-        hue: Math.random() * 20 + 350, // Red-ish hues
-      });
-    }
-    particlesRef.current = particles;
-  }, []);
-
-  // Canvas animation with frame throttling for performance
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || prefersReducedMotion) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let resizeTimeout: ReturnType<typeof setTimeout>;
-    const resizeCanvas = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        const parent = canvas.parentElement;
-        if (!parent) return;
-        const rect = parent.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap DPR for performance
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        initParticles(rect.width, rect.height);
-      }, 100);
-    };
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      };
-    };
-
-    canvas.addEventListener("mousemove", handleMouseMove);
-
-    // Throttle to ~30fps on mobile for better performance
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    const targetInterval = isMobile ? 33 : 16; // ~30fps mobile, ~60fps desktop
-    let lastFrameTime = 0;
-
-    const animate = (timestamp: number) => {
-      if (!ctx || !canvas) return;
-
-      const elapsed = timestamp - lastFrameTime;
-      if (elapsed < targetInterval) {
-        animationFrameRef.current = requestAnimationFrame(animate);
-        return;
-      }
-      lastFrameTime = timestamp - (elapsed % targetInterval);
-
-      const w = canvas.width / (Math.min(window.devicePixelRatio || 1, 2));
-      const h = canvas.height / (Math.min(window.devicePixelRatio || 1, 2));
-      ctx.clearRect(0, 0, w, h);
-
-      const mouse = mouseRef.current;
-      const particles = particlesRef.current;
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i]!;
-
-        // Subtle mouse attraction
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
-        const distSq = dx * dx + dy * dy;
-        if (distSq < 22500 && distSq > 0) { // 150^2
-          const dist = Math.sqrt(distSq);
-          const force = (150 - dist) / 150 * 0.02;
-          p.vx += (dx / dist) * force;
-          p.vy += (dy / dist) * force;
-        }
-
-        // Apply velocity with damping
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vx *= 0.99;
-        p.vy *= 0.99;
-
-        // Wrap around
-        if (p.x < -10) p.x = w + 10;
-        if (p.x > w + 10) p.x = -10;
-        if (p.y < -10) p.y = h + 10;
-        if (p.y > h + 10) p.y = -10;
-
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 80%, 60%, ${p.opacity})`;
-        ctx.fill();
-      }
-
-      // Draw connections between close particles (optimized with squared distance)
-      const maxDistSq = 10000; // 100^2
-      for (let i = 0; i < particles.length; i++) {
-        const a = particles[i]!;
-        for (let j = i + 1; j < particles.length; j++) {
-          const b = particles[j]!;
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const distSq = dx * dx + dy * dy;
-          if (distSq < maxDistSq) {
-            const dist = Math.sqrt(distSq);
-            const alpha = (1 - dist / 100) * 0.08;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(239, 68, 68, ${alpha})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-
-      animationFrameRef.current = requestAnimationFrame(animate);
-    };
-
-    animationFrameRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      clearTimeout(resizeTimeout);
-      window.removeEventListener("resize", resizeCanvas);
-      canvas.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameRef.current);
-    };
-  }, [prefersReducedMotion, initParticles]);
 
   // Stats observer
   useEffect(() => {
@@ -289,14 +133,14 @@ export function Hero() {
       className="relative pt-28 pb-20 sm:pt-36 sm:pb-28 lg:pt-44 lg:pb-36 overflow-hidden"
       aria-label="Introduction"
     >
-      {/* Canvas particle background */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full -z-10"
-        aria-hidden="true"
-      />
+      {/* Canvas particle background — lazy loaded for smaller initial bundle */}
+      {!prefersReducedMotion && (
+        <Suspense fallback={null}>
+          <ParticleCanvas />
+        </Suspense>
+      )}
 
-      {/* Decorative gradient blobs */}
+      {/* Decorative gradient blobs — instant visual before canvas loads */}
       <div className="absolute inset-0 -z-10" aria-hidden="true">
         <div className="absolute top-20 left-1/4 w-72 h-72 bg-primary-100/60 dark:bg-primary-900/20 rounded-full blur-3xl animate-pulse-slow" />
         <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-primary-50/80 dark:bg-primary-900/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: "1.5s" }} />

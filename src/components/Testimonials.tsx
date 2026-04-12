@@ -69,7 +69,7 @@ export function Testimonials() {
     <section
       id="testimonials"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-900 dark:bg-surface-950 text-white relative overflow-hidden"
+      className="py-20 sm:py-28 bg-surface-900 dark:bg-surface-950 text-white relative overflow-hidden scroll-mt-20"
       aria-labelledby="testimonials-heading"
     >
       {/* Background decoration */}
@@ -169,10 +169,10 @@ export function Testimonials() {
               aria-selected={activeIndex === i}
               aria-label={`View testimonial from ${testimonial.author}`}
               onClick={() => handleDotClick(i)}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+              className={`h-2.5 rounded-full transition-all duration-300 ${
                 activeIndex === i
                   ? "bg-primary-400 w-8"
-                  : "bg-surface-600 hover:bg-surface-500"
+                  : "bg-surface-600 hover:bg-surface-500 w-2.5"
               }`}
             />
           ))}

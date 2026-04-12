@@ -104,7 +104,7 @@ function InteractiveDemo() {
     <section
       id="demo"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-50/80 dark:bg-surface-900/30"
+      className="py-20 sm:py-28 bg-surface-50/80 dark:bg-surface-900/30 scroll-mt-20"
       aria-labelledby="demo-heading"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

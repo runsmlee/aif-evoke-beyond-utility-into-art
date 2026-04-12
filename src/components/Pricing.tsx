@@ -101,7 +101,7 @@ function PricingCard({ tier, isInView, delay, billing }: PricingCardProps) {
       {(showSavings || showStudioSavings) && !tier.highlighted && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="inline-flex items-center px-3 py-1 text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/30 rounded-full">
-            Save {tier.id === "pro" ? "20%" : "20%"}
+            Save 20%
           </span>
         </div>
       )}
@@ -199,7 +199,7 @@ export function Pricing() {
     <section
       id="pricing"
       ref={ref}
-      className="py-20 sm:py-28"
+      className="py-20 sm:py-28 scroll-mt-20"
       aria-labelledby="pricing-heading"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
