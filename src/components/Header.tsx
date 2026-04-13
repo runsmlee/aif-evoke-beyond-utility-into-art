@@ -129,7 +129,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <a
-            href="#"
+            href="/"
             className="flex items-center gap-2.5 group"
             aria-label="Evoke — Home"
           >

@@ -96,6 +96,12 @@ describe("Header", () => {
     expect(screen.getByLabelText("Evoke — Home")).toBeDefined();
   });
 
+  it("logo links to '/' not '#'", () => {
+    render(<Header {...defaultProps} />);
+    const logoLink = screen.getByLabelText("Evoke — Home");
+    expect(logoLink).toHaveAttribute("href", "/");
+  });
+
   it("mobile menu has dialog wrapper with aria-modal", () => {
     render(<Header {...defaultProps} />);
     const menuButton = screen.getByLabelText("Open menu");

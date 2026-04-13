@@ -1,6 +1,11 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 import { Footer } from "./Footer";
+
+// Mock the API module
+vi.mock("../utils/api", () => ({
+  subscribeEmail: vi.fn().mockResolvedValue(undefined),
+}));
 
 describe("Footer", () => {
   it("renders the Evoke brand name", () => {
@@ -43,11 +48,20 @@ describe("Footer", () => {
     expect(screen.getByText("Status")).toBeDefined();
   });
 
-  it("renders social media links", () => {
+  it("renders social media links with external URLs", () => {
     render(<Footer />);
-    expect(screen.getByLabelText("Evoke on Twitter")).toBeDefined();
-    expect(screen.getByLabelText("Evoke on GitHub")).toBeDefined();
-    expect(screen.getByLabelText("Evoke on LinkedIn")).toBeDefined();
+    const twitterLink = screen.getByLabelText("Evoke on Twitter");
+    expect(twitterLink).toHaveAttribute("href", "https://x.com/evokeapp");
+    expect(twitterLink).toHaveAttribute("target", "_blank");
+    expect(twitterLink).toHaveAttribute("rel", "noopener noreferrer");
+
+    const githubLink = screen.getByLabelText("Evoke on GitHub");
+    expect(githubLink).toHaveAttribute("href", "https://github.com/evokeapp");
+    expect(githubLink).toHaveAttribute("target", "_blank");
+
+    const linkedinLink = screen.getByLabelText("Evoke on LinkedIn");
+    expect(linkedinLink).toHaveAttribute("href", "https://linkedin.com/company/evokeapp");
+    expect(linkedinLink).toHaveAttribute("target", "_blank");
   });
 
   it("renders the newsletter signup form", () => {
@@ -61,7 +75,7 @@ describe("Footer", () => {
     expect(screen.getByText("Stay inspired")).toBeDefined();
   });
 
-  it("shows success message on valid email submit", () => {
+  it("shows success message on valid email submit", async () => {
     render(<Footer />);
     const input = screen.getByLabelText("Email address for newsletter");
     const submitButton = screen.getByLabelText("Subscribe to newsletter");
@@ -69,7 +83,23 @@ describe("Footer", () => {
     fireEvent.change(input, { target: { value: "test@example.com" } });
     fireEvent.click(submitButton);
 
-    expect(screen.getByText(/subscribed/i)).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText(/subscribed/i)).toBeDefined();
+    });
+  });
+
+  it("calls subscribeEmail on valid submit", async () => {
+    const { subscribeEmail } = await import("../utils/api");
+    render(<Footer />);
+    const input = screen.getByLabelText("Email address for newsletter");
+    const submitButton = screen.getByLabelText("Subscribe to newsletter");
+
+    fireEvent.change(input, { target: { value: "test@example.com" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(subscribeEmail).toHaveBeenCalledWith("test@example.com", "footer-newsletter");
+    });
   });
 
   it("does not submit with invalid email", () => {
@@ -96,6 +126,23 @@ describe("Footer", () => {
     expect(screen.getByText("Cookies")).toBeDefined();
   });
 
+  it("legal links use proper paths instead of '#'", () => {
+    render(<Footer />);
+    expect(screen.getByText("Privacy").closest("a")).toHaveAttribute("href", "/privacy");
+    expect(screen.getByText("Terms").closest("a")).toHaveAttribute("href", "/terms");
+    expect(screen.getByText("Cookies").closest("a")).toHaveAttribute("href", "/cookies");
+  });
+
+  it("footer nav links use proper paths instead of '#'", () => {
+    render(<Footer />);
+    expect(screen.getByText("Changelog").closest("a")).toHaveAttribute("href", "/changelog");
+    expect(screen.getByText("About").closest("a")).toHaveAttribute("href", "/about");
+    expect(screen.getByText("Blog").closest("a")).toHaveAttribute("href", "/blog");
+    expect(screen.getByText("Careers").closest("a")).toHaveAttribute("href", "/careers");
+    expect(screen.getByText("Documentation").closest("a")).toHaveAttribute("href", "/docs");
+    expect(screen.getByText("Help Center").closest("a")).toHaveAttribute("href", "/help");
+  });
+
   it("has accessible footer landmark", () => {
     render(<Footer />);
     const footer = screen.getByRole("contentinfo");
@@ -107,5 +154,11 @@ describe("Footer", () => {
     render(<Footer />);
     const legalNav = screen.getByRole("navigation", { name: "Legal links" });
     expect(legalNav).toBeDefined();
+  });
+
+  it("brand logo links to home with /", () => {
+    render(<Footer />);
+    const brandLink = screen.getByLabelText("Evoke — Home");
+    expect(brandLink).toHaveAttribute("href", "/");
   });
 });

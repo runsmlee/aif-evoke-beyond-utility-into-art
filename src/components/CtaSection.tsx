@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useInView } from "../hooks/useInView";
 import { EMAIL_REGEX } from "../utils/validation";
+import { subscribeEmail } from "../utils/api";
 
 function validateEmail(email: string): string | null {
   if (!email.trim()) return "Email address is required";
@@ -14,6 +15,7 @@ export function CtaSection() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleEmailChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +38,7 @@ export function CtaSection() {
   }, [email]);
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setTouched(true);
       const validationError = validateEmail(email);
@@ -44,9 +46,18 @@ export function CtaSection() {
         setError(validationError);
         return;
       }
-      setSubmitted(true);
-      setEmail("");
+
+      setLoading(true);
       setError(null);
+      try {
+        await subscribeEmail(email, "cta-section");
+        setSubmitted(true);
+        setEmail("");
+      } catch {
+        setError("Something went wrong. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     },
     [email],
   );
@@ -125,6 +136,7 @@ export function CtaSection() {
                       onBlur={handleBlur}
                       placeholder="Enter your email"
                       required
+                      disabled={loading}
                       aria-invalid={error ? "true" : undefined}
                       aria-describedby={error ? "cta-email-error" : undefined}
                       className={`w-full px-4 py-3.5 text-surface-900 placeholder-surface-400 bg-white rounded-xl border-0 focus:ring-2 focus:outline-none text-sm sm:text-base transition-colors duration-200 ${
@@ -145,9 +157,10 @@ export function CtaSection() {
                   </div>
                   <button
                     type="submit"
-                    className="px-6 py-3.5 text-sm sm:text-base font-semibold text-primary-600 bg-white rounded-xl hover:bg-surface-50 transition-all duration-200 shadow-lg shadow-primary-900/30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 whitespace-nowrap"
+                    disabled={loading}
+                    className="px-6 py-3.5 text-sm sm:text-base font-semibold text-primary-600 bg-white rounded-xl hover:bg-surface-50 transition-all duration-200 shadow-lg shadow-primary-900/30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Get Started Free
+                    {loading ? "Subscribing..." : "Get Started Free"}
                   </button>
                 </div>
               )}

@@ -1,6 +1,11 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 import { CtaSection } from "./CtaSection";
+
+// Mock the API module
+vi.mock("../utils/api", () => ({
+  subscribeEmail: vi.fn().mockResolvedValue(undefined),
+}));
 
 describe("CtaSection", () => {
   it("renders the CTA heading", () => {
@@ -20,7 +25,7 @@ describe("CtaSection", () => {
     expect(screen.getByText("Cancel anytime")).toBeDefined();
   });
 
-  it("shows success message on valid email submit", () => {
+  it("shows success message on valid email submit", async () => {
     render(<CtaSection />);
     const input = screen.getByLabelText("Email address for signup");
     const submitButton = screen.getByText("Get Started Free");
@@ -28,7 +33,23 @@ describe("CtaSection", () => {
     fireEvent.change(input, { target: { value: "test@example.com" } });
     fireEvent.click(submitButton);
 
-    expect(screen.getByText(/Welcome aboard/i)).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText(/Welcome aboard/i)).toBeDefined();
+    });
+  });
+
+  it("calls subscribeEmail with correct arguments on valid submit", async () => {
+    const { subscribeEmail } = await import("../utils/api");
+    render(<CtaSection />);
+    const input = screen.getByLabelText("Email address for signup");
+    const submitButton = screen.getByText("Get Started Free");
+
+    fireEvent.change(input, { target: { value: "test@example.com" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(subscribeEmail).toHaveBeenCalledWith("test@example.com", "cta-section");
+    });
   });
 
   it("does not submit with empty email", () => {
@@ -78,6 +99,43 @@ describe("CtaSection", () => {
     // Fix the email - error should clear
     fireEvent.change(input, { target: { value: "good@example.com" } });
     expect(screen.queryByText(/valid email address/i)).toBeNull();
+  });
+
+  it("shows error when API call fails", async () => {
+    const { subscribeEmail } = await import("../utils/api");
+    vi.mocked(subscribeEmail).mockRejectedValueOnce(new Error("Network error"));
+
+    render(<CtaSection />);
+    const input = screen.getByLabelText("Email address for signup");
+    const submitButton = screen.getByText("Get Started Free");
+
+    fireEvent.change(input, { target: { value: "test@example.com" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Something went wrong/i)).toBeDefined();
+    });
+  });
+
+  it("shows loading state while submitting", async () => {
+    // Make the API call hang briefly
+    const { subscribeEmail } = await import("../utils/api");
+    vi.mocked(subscribeEmail).mockImplementationOnce(
+      () => new Promise((resolve) => setTimeout(resolve, 100)),
+    );
+
+    render(<CtaSection />);
+    const input = screen.getByLabelText("Email address for signup");
+    const submitButton = screen.getByText("Get Started Free");
+
+    fireEvent.change(input, { target: { value: "test@example.com" } });
+    fireEvent.click(submitButton);
+
+    expect(screen.getByText("Subscribing...")).toBeDefined();
+
+    await waitFor(() => {
+      expect(screen.getByText(/Welcome aboard/i)).toBeDefined();
+    });
   });
 
   it("has a contact section with correct id", () => {
