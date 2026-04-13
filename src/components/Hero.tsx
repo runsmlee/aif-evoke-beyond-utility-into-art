@@ -1,18 +1,46 @@
+import type { JSX } from "react";
 import { useState, useEffect, useRef, lazy, Suspense, memo } from "react";
 import { useInView } from "../hooks/useInView";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
-interface StatItem {
-  value: string;
-  numericValue: number;
-  suffix: string;
-  label: string;
+interface CapabilityItem {
+  title: string;
+  subtitle: string;
+  icon: JSX.Element;
 }
 
-const stats: StatItem[] = [
-  { value: "10K+", numericValue: 10, suffix: "K+", label: "Active Creators" },
-  { value: "50K+", numericValue: 50, suffix: "K+", label: "Artworks Created" },
-  { value: "99%", numericValue: 99, suffix: "%", label: "Satisfaction Rate" },
+const capabilities: CapabilityItem[] = [
+  {
+    title: "Infinite Combinations",
+    subtitle: "Any hex color, any angle",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+        <path d="M2 12h20" />
+      </svg>
+    ),
+  },
+  {
+    title: "Zero Setup",
+    subtitle: "Open it, create it, copy it",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M13 2L3 14h9l-1-8" />
+        <path d="M16 12l4-2-8-6 12" />
+      </svg>
+    ),
+  },
+  {
+    title: "Open Source",
+    subtitle: "No accounts, no tracking",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+        <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+      </svg>
+    ),
+  },
 ];
 
 const rotatingWords = ["Art", "Experience", "Emotion", "Expression", "Craft"];
@@ -63,77 +91,9 @@ const RotatingWord = memo(function RotatingWord({ words, interval = 3000 }: { wo
   );
 });
 
-const AnimatedCounter = memo(function AnimatedCounter({ target, suffix, isInView }: { target: number; suffix: string; isInView: boolean }) {
-  const [count, setCount] = useState(0);
-  const prefersReducedMotion = useReducedMotion();
-  const hasAnimated = useRef(false);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    if (!isInView) return;
-
-    if (hasAnimated.current) return;
-
-    if (prefersReducedMotion) {
-      setCount(target);
-      hasAnimated.current = true;
-      return;
-    }
-
-    hasAnimated.current = true;
-
-    const duration = 1500;
-    const steps = 60;
-    const increment = target / steps;
-    let current = 0;
-    const stepTime = duration / steps;
-
-    timerRef.current = setInterval(() => {
-      current += increment;
-      if (current >= target) {
-        setCount(target);
-        if (timerRef.current) clearInterval(timerRef.current);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, stepTime);
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [isInView, prefersReducedMotion, target]);
-
-  return (
-    <span>
-      {count}
-      {suffix}
-    </span>
-  );
-});
-
 export function Hero() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
-  const [statsVisible, setStatsVisible] = useState(false);
-  const statsRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
-
-  // Stats observer
-  useEffect(() => {
-    if (!statsRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry?.isIntersecting) {
-          setStatsVisible(true);
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    observer.observe(statsRef.current);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section
@@ -223,32 +183,25 @@ export function Hero() {
             </a>
           </div>
 
-          {/* Social proof bar with animated counters */}
+          {/* Capability cards — honest descriptions instead of fake stats */}
           <div
-            ref={statsRef}
             className={`mt-16 pt-10 border-t border-surface-200/60 dark:border-surface-700/60 ${
               isInView ? "animate-fade-in" : "opacity-0"
             }`}
             style={{ animationDelay: "0.5s" }}
           >
-            <p className="text-sm font-medium text-surface-400 dark:text-surface-500 mb-6">
-              Trusted by creators worldwide
-            </p>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
-              {stats.map((stat) => (
-                <div key={stat.label} className="text-center px-4">
-                  <div className="text-2xl sm:text-3xl font-extrabold text-surface-900 dark:text-white">
-                    {statsVisible ? (
-                      <AnimatedCounter
-                        target={stat.numericValue}
-                        suffix={stat.suffix}
-                        isInView={statsVisible}
-                      />
-                    ) : (
-                      "\u2014"
-                    )}
+              {capabilities.map((cap) => (
+                <div key={cap.title} className="text-center px-4 max-w-[160px]">
+                  <div className="text-primary-500 dark:text-primary-400 flex justify-center mb-2">
+                    {cap.icon}
                   </div>
-                  <div className="text-sm text-surface-500 dark:text-surface-400 mt-0.5">{stat.label}</div>
+                  <div className="text-sm sm:text-base font-bold text-surface-900 dark:text-white">
+                    {cap.title}
+                  </div>
+                  <div className="text-xs sm:text-sm text-surface-500 dark:text-surface-400 mt-0.5">
+                    {cap.subtitle}
+                  </div>
                 </div>
               ))}
             </div>

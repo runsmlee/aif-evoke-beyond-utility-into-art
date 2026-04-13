@@ -1,10 +1,22 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { useInView } from "../hooks/useInView";
 
 interface ColorSwatch {
   hex: string;
   name: string;
 }
+
+interface SavedPalette {
+  id: string;
+  colors: ColorSwatch[];
+  angle: number;
+  savedAt: number;
+}
+
+const MAX_SAVED_PALETTES = 12;
+const STORAGE_KEY = "evoke-saved-palettes";
+
+const aestheticAngles = [15, 45, 90, 135, 180, 225, 270, 315];
 
 const basePalettes: ColorSwatch[][] = [
   [
@@ -30,6 +42,15 @@ const basePalettes: ColorSwatch[][] = [
   ],
 ];
 
+function fisherYatesShuffle<T>(arr: T[]): T[] {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i]!, shuffled[j]!] = [shuffled[j]!, shuffled[i]!];
+  }
+  return shuffled;
+}
+
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return { r: 0, g: 0, b: 0 };
@@ -51,6 +72,45 @@ function generateGradient(colors: string[], angle: number): string {
   return `linear-gradient(${angle}deg, ${stops})`;
 }
 
+function loadSavedPalettes(): SavedPalette[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.slice(0, MAX_SAVED_PALETTES);
+  } catch {
+    return [];
+  }
+}
+
+function savePalettesToStorage(palettes: SavedPalette[]): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(palettes.slice(0, MAX_SAVED_PALETTES)));
+  } catch {
+    // Storage full or unavailable — silently fail
+  }
+}
+
+function generateCssBlock(colors: ColorSwatch[], gradient: string): string {
+  const roles = ["primary", "secondary", "accent", "highlight", "base"] as const;
+  const lines = colors.map((c, i) => {
+    const role = roles[i] ?? `color-${i + 1}`;
+    return `  --evoke-${role}: ${c.hex.toUpperCase()};`;
+  });
+  lines.push(`  --evoke-gradient: ${gradient};`);
+  return `:root {\n${lines.join("\n")}\n}`;
+}
+
+function generateTailwindConfig(colors: ColorSwatch[]): string {
+  const roles = ["primary", "secondary", "accent", "highlight", "base"] as const;
+  const entries = colors.map((c, i) => {
+    const role = roles[i] ?? `color-${i + 1}`;
+    return `  'evoke-${role}': '${c.hex.toUpperCase()}'`;
+  });
+  return `colors: {\n${entries.join(",\n")}\n}`;
+}
+
 const anglePresets = [90, 135, 180, 225, 270];
 
 function InteractiveDemo() {
@@ -60,11 +120,57 @@ function InteractiveDemo() {
   const [gradientAngle, setGradientAngle] = useState(135);
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
   const [copiedCss, setCopiedCss] = useState(false);
+  const [savedPalettes, setSavedPalettes] = useState<SavedPalette[]>(loadSavedPalettes);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Angle queue for cycling through aesthetic angles without repeats
+  const angleQueueRef = useRef<number[]>(fisherYatesShuffle(aestheticAngles));
+
+  function getNextAestheticAngle(): number {
+    const queue = angleQueueRef.current;
+    if (queue.length === 0) {
+      angleQueueRef.current = fisherYatesShuffle(aestheticAngles);
+    }
+    const angle = angleQueueRef.current.shift()!;
+    return angle;
+  }
 
   const gradient = useMemo(
     () => generateGradient(activeColors.map((c) => c.hex), gradientAngle),
     [activeColors, gradientAngle],
   );
+
+  const cssBlock = useMemo(
+    () => generateCssBlock(activeColors, gradient),
+    [activeColors, gradient],
+  );
+
+  const tailwindConfig = useMemo(
+    () => generateTailwindConfig(activeColors),
+    [activeColors],
+  );
+
+  // Auto-save palette to history
+  const savePaletteToHistory = useCallback((colors: ColorSwatch[], angle: number) => {
+    const palette: SavedPalette = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      colors: colors.map((c) => ({ ...c })),
+      angle,
+      savedAt: Date.now(),
+    };
+    setSavedPalettes((prev) => {
+      const updated = [palette, ...prev].slice(0, MAX_SAVED_PALETTES);
+      savePalettesToStorage(updated);
+      return updated;
+    });
+    showToast("Palette saved to history");
+  }, []);
+
+  const showToast = useCallback((message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 2000);
+  }, []);
 
   const selectPalette = useCallback((index: number) => {
     setSelectedPalette(index);
@@ -73,24 +179,27 @@ function InteractiveDemo() {
 
   const shuffleColors = useCallback(() => {
     const base = basePalettes[selectedPalette]!;
-    const shuffled = [...base].sort(() => Math.random() - 0.5);
+    const shuffled = fisherYatesShuffle(base);
+    const newAngle = getNextAestheticAngle();
     setActiveColors(shuffled);
-    setGradientAngle(Math.floor(Math.random() * 360));
-  }, [selectedPalette]);
+    setGradientAngle(newAngle);
+    savePaletteToHistory(shuffled, newAngle);
+  }, [selectedPalette, savePaletteToHistory]);
 
   const mixColors = useCallback(() => {
-    setActiveColors((prev) => {
-      return prev.map((swatch) => {
-        const rgb = hexToRgb(swatch.hex);
-        const shift = () => Math.floor(Math.random() * 60) - 30;
-        return {
-          ...swatch,
-          hex: rgbToHex(rgb.r + shift(), rgb.g + shift(), rgb.b + shift()),
-        };
-      });
+    const newAngle = getNextAestheticAngle();
+    const newColors = activeColors.map((swatch) => {
+      const rgb = hexToRgb(swatch.hex);
+      const shift = () => Math.floor(Math.random() * 60) - 30;
+      return {
+        ...swatch,
+        hex: rgbToHex(rgb.r + shift(), rgb.g + shift(), rgb.b + shift()),
+      };
     });
-    setGradientAngle(Math.floor(Math.random() * 360));
-  }, []);
+    setActiveColors(newColors);
+    setGradientAngle(newAngle);
+    savePaletteToHistory(newColors, newAngle);
+  }, [activeColors, savePaletteToHistory]);
 
   const copyColor = useCallback((hex: string) => {
     navigator.clipboard.writeText(hex).catch(() => {
@@ -98,6 +207,29 @@ function InteractiveDemo() {
     });
     setCopiedColor(hex);
     setTimeout(() => setCopiedColor(null), 1500);
+  }, []);
+
+  const copyCssBlock = useCallback(() => {
+    navigator.clipboard.writeText(cssBlock).catch(() => {});
+    setCopiedCss(true);
+    setTimeout(() => setCopiedCss(false), 1500);
+  }, [cssBlock]);
+
+  const copyTailwindConfig = useCallback(() => {
+    navigator.clipboard.writeText(tailwindConfig).catch(() => {});
+  }, [tailwindConfig]);
+
+  const restorePalette = useCallback((palette: SavedPalette) => {
+    setActiveColors(palette.colors.map((c) => ({ ...c })));
+    setGradientAngle(palette.angle);
+  }, []);
+
+  const deletePalette = useCallback((id: string) => {
+    setSavedPalettes((prev) => {
+      const updated = prev.filter((p) => p.id !== id);
+      savePalettesToStorage(updated);
+      return updated;
+    });
   }, []);
 
   return (
@@ -310,23 +442,41 @@ function InteractiveDemo() {
                     Mix
                   </span>
                 </button>
-              </div>
-
-              {/* Generated CSS output */}
-              <div className="relative bg-surface-50 dark:bg-surface-900 rounded-xl p-4 border border-surface-200 dark:border-surface-700">
-                <p className="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-2">
-                  CSS
-                </p>
-                <code className="text-xs sm:text-sm font-mono text-surface-700 dark:text-surface-300 break-all">
-                  background: {gradient};
-                </code>
                 <button
                   type="button"
                   onClick={() => {
-                    navigator.clipboard.writeText(`background: ${gradient};`).catch(() => {});
-                    setCopiedCss(true);
-                    setTimeout(() => setCopiedCss(false), 1500);
+                    savePaletteToHistory(activeColors, gradientAngle);
                   }}
+                  className="px-4 py-2.5 text-sm font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/30 rounded-xl border border-primary-200 dark:border-primary-800 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-800"
+                  aria-label="Save current palette"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* CSS Output Section */}
+              <div className="relative bg-surface-50 dark:bg-surface-900 rounded-xl p-4 border border-surface-200 dark:border-surface-700">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider">
+                    CSS
+                  </p>
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      onClick={copyTailwindConfig}
+                      className="px-2 py-1 text-xs font-medium rounded-lg transition-all duration-200 text-surface-500 hover:text-primary-500 dark:text-surface-400 dark:hover:text-primary-400 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1"
+                      aria-label="Copy as Tailwind config"
+                    >
+                      Tailwind
+                    </button>
+                  </div>
+                </div>
+                <pre className="text-xs sm:text-sm font-mono text-surface-700 dark:text-surface-300 overflow-x-auto whitespace-pre-wrap">{cssBlock}</pre>
+                <button
+                  type="button"
+                  onClick={copyCssBlock}
                   className="absolute top-3 right-3 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1"
                   aria-label="Copy CSS to clipboard"
                 >
@@ -344,12 +494,105 @@ function InteractiveDemo() {
                   )}
                 </button>
               </div>
+
+              {/* Saved Palettes Drawer */}
+              <div className="border-t border-surface-200 dark:border-surface-700 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsDrawerOpen((prev) => !prev)}
+                  className="w-full flex items-center justify-between text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider"
+                  aria-expanded={isDrawerOpen}
+                  aria-controls="saved-palettes-drawer"
+                >
+                  <span>Saved Palettes ({savedPalettes.length}/{MAX_SAVED_PALETTES})</span>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={`transition-transform duration-200 ${isDrawerOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                {isDrawerOpen && (
+                  <div
+                    id="saved-palettes-drawer"
+                    className="mt-3 animate-slide-down"
+                  >
+                    {savedPalettes.length === 0 ? (
+                      <p className="text-xs text-surface-400 dark:text-surface-500 text-center py-4">
+                        No saved palettes yet. Shuffle or Mix to auto-save.
+                      </p>
+                    ) : (
+                      <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        {savedPalettes.map((palette) => {
+                          const miniGradient = generateGradient(
+                            palette.colors.map((c) => c.hex),
+                            palette.angle,
+                          );
+                          return (
+                            <div
+                              key={palette.id}
+                              className="group relative rounded-lg overflow-hidden border border-surface-200 dark:border-surface-700 cursor-pointer hover:ring-2 hover:ring-primary-400 transition-all duration-200"
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`Restore saved palette from ${new Date(palette.savedAt).toLocaleTimeString()}`}
+                              onClick={() => restorePalette(palette)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  restorePalette(palette);
+                                }
+                              }}
+                            >
+                              <div
+                                className="h-10 w-full"
+                                style={{ background: miniGradient }}
+                                aria-hidden="true"
+                              />
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deletePalette(palette.id);
+                                }}
+                                className="absolute top-0.5 right-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-black/40 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-500 focus-visible:opacity-100"
+                                aria-label={`Delete palette saved at ${new Date(palette.savedAt).toLocaleTimeString()}`}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Toast notification */}
+      {toastMessage && (
+        <div
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-surface-900 dark:bg-surface-100 text-white dark:text-surface-900 text-sm font-medium rounded-lg shadow-lg animate-fade-in z-50"
+          role="status"
+          aria-live="polite"
+        >
+          {toastMessage}
+        </div>
+      )}
     </section>
   );
 }
 
-export { InteractiveDemo };
+export { InteractiveDemo, fisherYatesShuffle };
