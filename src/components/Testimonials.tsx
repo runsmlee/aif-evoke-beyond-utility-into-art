@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useInView } from "../hooks/useInView";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
@@ -44,13 +44,13 @@ const testimonials: Testimonial[] = [
 export function Testimonials() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const isPausedRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   // Auto-rotate testimonials on mobile for engagement
   // Pauses on hover/focus for accessibility (WCAG 2.2)
   useEffect(() => {
-    if (prefersReducedMotion || !isInView || isPaused) return;
+    if (prefersReducedMotion || !isInView || isPausedRef.current) return;
 
     // Only auto-rotate on narrow screens (mobile)
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -61,10 +61,29 @@ export function Testimonials() {
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isInView, prefersReducedMotion, isPaused]);
+  }, [isInView, prefersReducedMotion, activeIndex]);
 
   const handleDotClick = useCallback((index: number) => {
     setActiveIndex(index);
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    isPausedRef.current = true;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    isPausedRef.current = false;
+  }, []);
+
+  const handleFocus = useCallback(() => {
+    isPausedRef.current = true;
+  }, []);
+
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
+    // Only unpause if focus leaves the container entirely
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      isPausedRef.current = false;
+    }
   }, []);
 
   return (
@@ -110,21 +129,29 @@ export function Testimonials() {
           </p>
         </div>
 
-        {/* Testimonial Grid */}
+        {/* Testimonial Grid — all visible on desktop, carousel on mobile */}
         <div
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onFocus={() => setIsPaused(true)}
-          onBlur={() => setIsPaused(false)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          role="region"
+          aria-roledescription="carousel"
+          aria-label="Testimonials carousel"
         >
           {testimonials.map((testimonial, index) => (
             <blockquote
               key={testimonial.id}
               className={`bg-surface-800/80 dark:bg-surface-800/50 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-surface-700/50 dark:border-surface-700/30 hover:border-surface-600 dark:hover:border-surface-600 transition-all duration-300 hover:-translate-y-1 ${
+                // On mobile: only show the active card; on desktop: show all
+                index === activeIndex ? "block" : "hidden md:block"
+              } ${
                 isInView ? "animate-slide-up" : "opacity-0"
               }`}
               style={{ animationDelay: `${index * 0.12}s` }}
+              aria-roledescription="slide"
+              aria-label={`Testimonial ${index + 1} of ${testimonials.length}`}
             >
               {/* Stars */}
               <div className="flex gap-1 mb-4" aria-label="5 out of 5 stars">

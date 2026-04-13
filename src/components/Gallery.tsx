@@ -151,11 +151,15 @@ export function Gallery() {
       ? galleryItems
       : galleryItems.filter((item) => item.category === activeFilter);
 
-  // Animate transition when filter changes
+  // Animate transition when filter changes using requestAnimationFrame for reliability
   useEffect(() => {
     setIsTransitioning(true);
-    const timer = setTimeout(() => setIsTransitioning(false), 50);
-    return () => clearTimeout(timer);
+    const frameId = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setIsTransitioning(false);
+      });
+    });
+    return () => cancelAnimationFrame(frameId);
   }, [activeFilter]);
 
   const handleFilter = useCallback((category: string) => {
@@ -279,6 +283,7 @@ export function Gallery() {
             isTransitioning ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
           }`}
           role="tabpanel"
+          aria-labelledby="gallery-heading"
           aria-label="Gallery items"
         >
           {filteredItems.length === 0 && (
@@ -287,7 +292,7 @@ export function Gallery() {
             </div>
           )}
           {filteredItems.map((item, index) => (
-            <article
+            <div
               key={item.id}
               className={`group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 gallery-item-enter focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 focus-visible:outline-none active:scale-[0.98] ${
                 isInView ? "animate-scale-in" : "opacity-0"
@@ -338,7 +343,7 @@ export function Gallery() {
               <span className="sr-only">
                 {item.title} — {item.category} artwork
               </span>
-            </article>
+            </div>
           ))}
         </div>
       </div>

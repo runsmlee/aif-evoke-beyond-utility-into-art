@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { useInView } from "../hooks/useInView";
-
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { EMAIL_REGEX } from "../utils/validation";
 
 function validateEmail(email: string): string | null {
   if (!email.trim()) return "Email address is required";
@@ -116,7 +115,7 @@ export function CtaSection() {
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="flex-1">
                     <label htmlFor="cta-email" className="sr-only">
-                      Email address
+                      Email address for signup
                     </label>
                     <input
                       id="cta-email"
@@ -133,7 +132,6 @@ export function CtaSection() {
                           ? "focus:ring-red-300 ring-2 ring-red-400"
                           : "focus:ring-white"
                       }`}
-                      aria-label="Email address for signup"
                     />
                     {error && (
                       <p

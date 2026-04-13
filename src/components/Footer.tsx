@@ -1,6 +1,35 @@
 import { useState, useCallback } from "react";
+import { EMAIL_REGEX } from "../utils/validation";
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const footerLinks = [
+  {
+    heading: "Product",
+    links: [
+      { label: "Features", href: "#features" },
+      { label: "Gallery", href: "#gallery" },
+      { label: "Pricing", href: "#pricing" },
+      { label: "Changelog", href: "#" },
+    ],
+  },
+  {
+    heading: "Company",
+    links: [
+      { label: "About", href: "#" },
+      { label: "Blog", href: "#" },
+      { label: "Careers", href: "#" },
+      { label: "Press", href: "#" },
+    ],
+  },
+  {
+    heading: "Support",
+    links: [
+      { label: "Documentation", href: "#" },
+      { label: "Help Center", href: "#" },
+      { label: "Community", href: "#" },
+      { label: "Status", href: "#" },
+    ],
+  },
+];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -16,36 +45,6 @@ export function Footer() {
     },
     [footerEmail],
   );
-
-  const footerLinks = [
-    {
-      heading: "Product",
-      links: [
-        { label: "Features", href: "#features" },
-        { label: "Gallery", href: "#gallery" },
-        { label: "Pricing", href: "#pricing" },
-        { label: "Changelog", href: "#" },
-      ],
-    },
-    {
-      heading: "Company",
-      links: [
-        { label: "About", href: "#" },
-        { label: "Blog", href: "#" },
-        { label: "Careers", href: "#" },
-        { label: "Press", href: "#" },
-      ],
-    },
-    {
-      heading: "Support",
-      links: [
-        { label: "Documentation", href: "#" },
-        { label: "Help Center", href: "#" },
-        { label: "Community", href: "#" },
-        { label: "Status", href: "#" },
-      ],
-    },
-  ];
 
   return (
     <footer className="bg-surface-50 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-800" aria-label="Site footer">
@@ -123,7 +122,7 @@ export function Footer() {
                 </p>
               ) : (
                 <form onSubmit={handleFooterSubmit} className="flex gap-2">
-                  <label htmlFor="footer-email" className="sr-only">Email for newsletter</label>
+                  <label htmlFor="footer-email" className="sr-only">Email address for newsletter</label>
                   <input
                     id="footer-email"
                     type="email"
@@ -132,7 +131,6 @@ export function Footer() {
                     placeholder="Your email"
                     required
                     className="flex-1 min-w-0 px-3 py-2 text-sm bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors duration-200"
-                    aria-label="Email address for newsletter"
                   />
                   <button
                     type="submit"

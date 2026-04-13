@@ -75,7 +75,7 @@ export function App() {
           <Header theme={theme} toggleTheme={toggleTheme} />
         </Suspense>
       </ErrorBoundary>
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <Hero />
         <ErrorBoundary>
           <Suspense fallback={<SectionLoader />}>

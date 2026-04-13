@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { ThemeToggle } from "./ThemeToggle";
 import { type Theme } from "../hooks/useTheme";
 
@@ -7,7 +7,15 @@ interface HeaderProps {
   toggleTheme: () => void;
 }
 
+const navLinks = [
+  { label: "Features", href: "#features", id: "features" },
+  { label: "Gallery", href: "#gallery", id: "gallery" },
+  { label: "Pricing", href: "#pricing", id: "pricing" },
+  { label: "Voices", href: "#testimonials", id: "testimonials" },
+];
+
 export function Header({ theme, toggleTheme }: HeaderProps) {
+  const menuRef = useRef<HTMLElement | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -75,7 +83,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
 
       // Focus trap within mobile menu
       if (e.key === "Tab") {
-        const menu = document.getElementById("mobile-menu");
+        const menu = menuRef.current;
         if (!menu) return;
         const focusable = menu.querySelectorAll<HTMLElement>(
           'a[href], button, [tabindex]:not([tabindex="-1"])'
@@ -102,12 +110,12 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [mobileMenuOpen, closeMenu]);
 
-  const navLinks = [
-    { label: "Features", href: "#features", id: "features" },
-    { label: "Gallery", href: "#gallery", id: "gallery" },
-    { label: "Pricing", href: "#pricing", id: "pricing" },
-    { label: "Voices", href: "#testimonials", id: "testimonials" },
-  ];
+  // Focus the mobile menu when it opens
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      menuRef.current?.focus();
+    }
+  }, [mobileMenuOpen]);
 
   return (
     <header
@@ -158,7 +166,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
                     ? "text-primary-500 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20"
                     : "text-surface-600 dark:text-surface-300 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-50/50 dark:hover:bg-primary-900/20"
                 }`}
-                aria-current={activeSection === link.id ? "true" : undefined}
+                aria-current={activeSection === link.id ? "page" : undefined}
               >
                 {link.label}
                 {activeSection === link.id && (
@@ -221,33 +229,41 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <nav
-          id="mobile-menu"
-          className="md:hidden relative z-50 border-t border-surface-200 dark:border-surface-700 bg-white/95 dark:bg-surface-900/95 backdrop-blur-lg animate-slide-down"
+        <div
+          className="md:hidden relative z-50"
+          role="dialog"
+          aria-modal="true"
           aria-label="Mobile navigation"
         >
-          <div className="px-4 py-3 space-y-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="block px-3 py-2.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-xl transition-colors duration-200"
-                onClick={closeMenu}
-              >
-                {link.label}
-              </a>
-            ))}
-            <div className="pt-2 pb-1">
-              <a
-                href="#contact"
-                className="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200"
-                onClick={closeMenu}
-              >
-                Get Started
-              </a>
-            </div>
+          <nav
+            id="mobile-menu"
+            ref={menuRef}
+            className="border-t border-surface-200 dark:border-surface-700 bg-white/95 dark:bg-surface-900/95 backdrop-blur-lg animate-slide-down"
+            aria-label="Mobile navigation"
+          >
+            <div className="px-4 py-3 space-y-1">
+              {navLinks.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="block px-3 py-2.5 text-sm font-medium text-surface-700 dark:text-surface-200 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-surface-50 dark:hover:bg-surface-800 rounded-xl transition-colors duration-200"
+                  onClick={closeMenu}
+                >
+                  {link.label}
+                </a>
+              ))}
+              <div className="pt-2 pb-1">
+                <a
+                  href="#contact"
+                  className="block w-full text-center px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200"
+                  onClick={closeMenu}
+                >
+                  Get Started
+                </a>
+              </div>
           </div>
         </nav>
+        </div>
       )}
     </header>
   );

@@ -95,4 +95,24 @@ describe("Header", () => {
     render(<Header {...defaultProps} />);
     expect(screen.getByLabelText("Evoke — Home")).toBeDefined();
   });
+
+  it("mobile menu has dialog wrapper with aria-modal", () => {
+    render(<Header {...defaultProps} />);
+    const menuButton = screen.getByLabelText("Open menu");
+    fireEvent.click(menuButton);
+
+    const dialog = screen.getByRole("dialog", { name: "Mobile navigation" });
+    expect(dialog).toBeDefined();
+    expect(dialog).toHaveAttribute("aria-modal", "true");
+  });
+
+  it("mobile menu contains navigation landmark inside dialog", () => {
+    render(<Header {...defaultProps} />);
+    const menuButton = screen.getByLabelText("Open menu");
+    fireEvent.click(menuButton);
+
+    const dialog = screen.getByRole("dialog");
+    const nav = screen.getByRole("navigation", { name: "Mobile navigation" });
+    expect(dialog.contains(nav)).toBe(true);
+  });
 });

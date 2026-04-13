@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { Testimonials } from "./Testimonials";
 
@@ -66,5 +66,39 @@ describe("Testimonials", () => {
     render(<Testimonials />);
     const starLabels = screen.getAllByLabelText("5 out of 5 stars");
     expect(starLabels.length).toBe(3);
+  });
+
+  it("has carousel region with aria-roledescription", () => {
+    render(<Testimonials />);
+    const region = screen.getByRole("region", { name: /Testimonials carousel/i });
+    expect(region).toBeDefined();
+    expect(region).toHaveAttribute("aria-roledescription", "carousel");
+  });
+
+  it("renders mobile navigation dots", () => {
+    render(<Testimonials />);
+    const tablist = screen.getByRole("tablist", { name: "Testimonial navigation" });
+    expect(tablist).toBeDefined();
+    const dots = tablist.querySelectorAll('button[role="tab"]');
+    expect(dots.length).toBe(3);
+  });
+
+  it("navigates to a specific testimonial when dot is clicked", () => {
+    render(<Testimonials />);
+    const dots = screen.getAllByRole("tab");
+    // Click the second dot
+    fireEvent.click(dots[1]!);
+    // The second dot should be selected
+    expect(dots[1]).toHaveAttribute("aria-selected", "true");
+    expect(dots[0]).toHaveAttribute("aria-selected", "false");
+  });
+
+  it("blockquotes have slide role descriptions", () => {
+    render(<Testimonials />);
+    const quotes = document.querySelectorAll("blockquote");
+    expect(quotes[0]).toHaveAttribute("aria-roledescription", "slide");
+    expect(quotes[0]).toHaveAttribute("aria-label", "Testimonial 1 of 3");
+    expect(quotes[1]).toHaveAttribute("aria-label", "Testimonial 2 of 3");
+    expect(quotes[2]).toHaveAttribute("aria-label", "Testimonial 3 of 3");
   });
 });

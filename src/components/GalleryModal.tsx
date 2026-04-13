@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 interface GalleryModalItem {
   id: string;
@@ -18,37 +18,71 @@ export type { GalleryModalItem };
 
 export function GalleryModal({ item, onClose }: GalleryModalProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
 
   // Focus management and body scroll lock
   useEffect(() => {
     previousFocus.current = document.activeElement as HTMLElement;
     document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
+    // Delay focus to allow animation to start
+    requestAnimationFrame(() => {
+      closeRef.current?.focus();
+    });
 
     return () => {
       document.body.style.overflow = "";
-      previousFocus.current?.focus();
+      // Only restore focus if the previous element is still in the DOM
+      if (previousFocus.current && previousFocus.current.isConnected) {
+        previousFocus.current.focus();
+      }
     };
   }, []);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+  // Focus trap: keep Tab/Shift+Tab within the modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        e.stopPropagation();
+        e.preventDefault();
         onClose();
+        return;
       }
-    },
-    [onClose],
-  );
+
+      if (e.key === "Tab" && modalRef.current) {
+        const focusable = modalRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+
+        const first = focusable[0]!;
+        const last = focusable[focusable.length - 1]!;
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      }
+    };
+
+    // Use capture phase to intercept before React handlers
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
+  }, [onClose]);
 
   return (
     <div
+      ref={modalRef}
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
       aria-label={`${item.title} artwork details`}
-      onKeyDown={handleKeyDown}
     >
       {/* Backdrop */}
       <div

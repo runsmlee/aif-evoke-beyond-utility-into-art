@@ -1,11 +1,20 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
+  const tickingRef = useRef(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const updateVisibility = () => {
       setVisible(window.scrollY > 400);
+      tickingRef.current = false;
+    };
+
+    const handleScroll = () => {
+      if (!tickingRef.current) {
+        requestAnimationFrame(updateVisibility);
+        tickingRef.current = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });

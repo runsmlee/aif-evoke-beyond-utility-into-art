@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GalleryModal } from "./GalleryModal";
 
 const mockItem = {
@@ -12,6 +12,11 @@ const mockItem = {
 };
 
 describe("GalleryModal", () => {
+  beforeEach(() => {
+    // Reset focus before each test
+    document.body.focus();
+  });
+
   it("renders the artwork title", () => {
     render(<GalleryModal item={mockItem} onClose={vi.fn()} />);
     expect(screen.getByText("Test Artwork")).toBeDefined();
@@ -59,5 +64,28 @@ describe("GalleryModal", () => {
     render(<GalleryModal item={mockItem} onClose={vi.fn()} />);
     const dialog = screen.getByRole("dialog");
     expect(dialog).toHaveAttribute("aria-modal", "true");
+  });
+
+  it("focuses the close button on mount", async () => {
+    render(<GalleryModal item={mockItem} onClose={vi.fn()} />);
+    const closeButton = screen.getByLabelText("Close modal");
+    await waitFor(() => {
+      expect(closeButton).toHaveFocus();
+    });
+  });
+
+  it("has descriptive aria-label for the dialog", () => {
+    render(<GalleryModal item={mockItem} onClose={vi.fn()} />);
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveAttribute("aria-label", "Test Artwork artwork details");
+  });
+
+  it("prevents body scroll while open and restores on unmount", () => {
+    const { unmount } = render(<GalleryModal item={mockItem} onClose={vi.fn()} />);
+    // Body scroll should be locked (overflow hidden)
+    expect(document.body.style.overflow).toBe("hidden");
+    unmount();
+    // Body scroll should be restored
+    expect(document.body.style.overflow).toBe("");
   });
 });

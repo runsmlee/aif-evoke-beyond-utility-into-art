@@ -25,19 +25,27 @@ const RotatingWord = memo(function RotatingWord({ words, interval = 3000 }: { wo
   const [index, setIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const prefersReducedMotion = useReducedMotion();
+  const pendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (prefersReducedMotion || words.length <= 1) return;
 
     const timer = setInterval(() => {
       setIsTransitioning(true);
-      setTimeout(() => {
+      pendingTimeout.current = setTimeout(() => {
         setIndex((prev) => (prev + 1) % words.length);
         setIsTransitioning(false);
+        pendingTimeout.current = null;
       }, 300);
     }, interval);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (pendingTimeout.current) {
+        clearTimeout(pendingTimeout.current);
+        pendingTimeout.current = null;
+      }
+    };
   }, [words.length, interval, prefersReducedMotion]);
 
   return (
