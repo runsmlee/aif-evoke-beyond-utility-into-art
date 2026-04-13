@@ -1,3 +1,9 @@
+interface SubscriptionRecord {
+  email: string;
+  source: string;
+  subscribedAt: string;
+}
+
 export default async function handler(req: Request): Promise<Response> {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Method not allowed" }), {
@@ -34,9 +40,21 @@ export default async function handler(req: Request): Promise<Response> {
       );
     }
 
-    // In production, integrate with an email service (Resend, Mailchimp, Loops, etc.)
-    // For now, log the subscription. Vercel function logs are visible in the dashboard.
-    console.log(`[subscribe] New subscriber from ${source ?? "unknown"}: ${email}`);
+    // ── Integration point ──────────────────────────────────────────────────
+    // Replace this block with your email service provider call:
+    //   Resend:    await resend.emails.send({ from, to: email, subject, html })
+    //   Mailchimp: await mailchimp.lists.addListMember(listId, { email_address: email, status: "subscribed" })
+    //   Loops:     await loops.sendTransactionalEmail({ transactionalId, email, dataVariables: { source } })
+    //
+    // The record below persists to Vercel function logs (visible in the dashboard)
+    // until a real provider is wired in.
+    // ─────────────────────────────────────────────────────────────────────────
+    const subscription: SubscriptionRecord = {
+      email: email.toLowerCase().trim(),
+      source: source ?? "unknown",
+      subscribedAt: new Date().toISOString(),
+    };
+    console.log(JSON.stringify({ event: "subscribe", ...subscription }));
 
     return new Response(
       JSON.stringify({ success: true, message: "Subscribed successfully" }),

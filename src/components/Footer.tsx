@@ -2,13 +2,19 @@ import { useState, useCallback } from "react";
 import { EMAIL_REGEX } from "../utils/validation";
 import { subscribeEmail } from "../utils/api";
 
-const footerLinks = [
+interface FooterLink {
+  label: string;
+  href: string;
+  samePage?: boolean;
+}
+
+const footerLinks: { heading: string; links: FooterLink[] }[] = [
   {
     heading: "Product",
     links: [
-      { label: "Features", href: "#features" },
-      { label: "Gallery", href: "#gallery" },
-      { label: "Pricing", href: "#pricing" },
+      { label: "Features", href: "#features", samePage: true },
+      { label: "Gallery", href: "#gallery", samePage: true },
+      { label: "Pricing", href: "#pricing", samePage: true },
       { label: "Changelog", href: "/changelog" },
     ],
   },
@@ -31,6 +37,14 @@ const footerLinks = [
     ],
   },
 ];
+
+function scrollToSection(href: string) {
+  const id = href.replace("#", "");
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 
 const socialLinks = [
   {
@@ -183,6 +197,16 @@ export function Footer() {
                   <li key={link.label}>
                     <a
                       href={link.href}
+                      {...(link.samePage
+                        ? {
+                            onClick: (e: React.MouseEvent) => {
+                              e.preventDefault();
+                              scrollToSection(link.href);
+                            },
+                          }
+                        : {
+                            target: "_self",
+                          })}
                       className="text-sm text-surface-500 dark:text-surface-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200"
                     >
                       {link.label}

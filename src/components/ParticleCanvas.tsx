@@ -40,6 +40,24 @@ export function ParticleCanvas() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Track visibility to pause animation when off-screen
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        isVisible = entry.isIntersecting;
+        if (isVisible && !animationFrameRef.current) {
+          animationFrameRef.current = requestAnimationFrame(animate);
+        } else if (!isVisible && animationFrameRef.current) {
+          cancelAnimationFrame(animationFrameRef.current);
+          animationFrameRef.current = 0;
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(canvas);
+
     let resizeTimeout: ReturnType<typeof setTimeout>;
     const resizeCanvas = () => {
       clearTimeout(resizeTimeout);
@@ -76,6 +94,12 @@ export function ParticleCanvas() {
 
     const animate = (timestamp: number) => {
       if (!ctx || !canvas) return;
+
+      // Skip frame if canvas is not visible
+      if (!isVisible) {
+        animationFrameRef.current = 0;
+        return;
+      }
 
       const elapsed = timestamp - lastFrameTime;
       if (elapsed < targetInterval) {
@@ -147,10 +171,13 @@ export function ParticleCanvas() {
     animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
+      observer.disconnect();
       clearTimeout(resizeTimeout);
       window.removeEventListener("resize", resizeCanvas);
       canvas.removeEventListener("mousemove", handleMouseMove);
-      cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, [initParticles]);
 
