@@ -101,4 +101,28 @@ describe("Testimonials", () => {
     expect(quotes[1]).toHaveAttribute("aria-label", "Testimonial 2 of 3");
     expect(quotes[2]).toHaveAttribute("aria-label", "Testimonial 3 of 3");
   });
+
+  it("non-active slides have aria-hidden for screen reader accessibility", () => {
+    render(<Testimonials />);
+    const quotes = document.querySelectorAll("blockquote");
+    // First slide is active by default, so it should NOT have aria-hidden
+    expect(quotes[0]).not.toHaveAttribute("aria-hidden");
+    // Second and third slides should have aria-hidden since they are not active
+    expect(quotes[1]).toHaveAttribute("aria-hidden", "true");
+    expect(quotes[2]).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("updates aria-hidden when navigating to a different slide", () => {
+    render(<Testimonials />);
+    const dots = screen.getAllByRole("tab");
+    const quotes = document.querySelectorAll("blockquote");
+
+    // Click second dot
+    fireEvent.click(dots[1]!);
+
+    // Now second slide should be visible, first and third hidden
+    expect(quotes[0]).toHaveAttribute("aria-hidden", "true");
+    expect(quotes[1]).not.toHaveAttribute("aria-hidden");
+    expect(quotes[2]).toHaveAttribute("aria-hidden", "true");
+  });
 });

@@ -151,6 +151,7 @@ export function Testimonials() {
               }`}
               style={{ animationDelay: `${index * 0.12}s` }}
               aria-roledescription="slide"
+              aria-hidden={index !== activeIndex ? "true" : undefined}
               aria-label={`Testimonial ${index + 1} of ${testimonials.length}`}
             >
               {/* Stars */}

@@ -81,6 +81,7 @@ export function Footer() {
   const [footerEmail, setFooterEmail] = useState("");
   const [footerSubmitted, setFooterSubmitted] = useState(false);
   const [footerLoading, setFooterLoading] = useState(false);
+  const [footerError, setFooterError] = useState<string | null>(null);
 
   const handleFooterSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,12 +89,13 @@ export function Footer() {
       if (!EMAIL_REGEX.test(footerEmail)) return;
 
       setFooterLoading(true);
+      setFooterError(null);
       try {
         await subscribeEmail(footerEmail, "footer-newsletter");
         setFooterSubmitted(true);
         setFooterEmail("");
       } catch {
-        // Silently fail — footer newsletter is secondary
+        setFooterError("Something went wrong. Please try again.");
       } finally {
         setFooterLoading(false);
       }
@@ -154,33 +156,42 @@ export function Footer() {
             <div className="mt-6">
               <p className="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Stay inspired</p>
               {footerSubmitted ? (
-                <p className="text-sm text-primary-600 dark:text-primary-400 flex items-center gap-1.5 animate-fade-in">
+                <p className="text-sm text-primary-600 dark:text-primary-400 flex items-center gap-1.5 animate-fade-in" role="status" aria-live="polite">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                   You&apos;re subscribed!
                 </p>
               ) : (
-                <form onSubmit={handleFooterSubmit} className="flex gap-2">
-                  <label htmlFor="footer-email" className="sr-only">Email address for newsletter</label>
-                  <input
-                    id="footer-email"
-                    type="email"
-                    value={footerEmail}
-                    onChange={(e) => setFooterEmail(e.target.value)}
-                    placeholder="Your email"
-                    required
-                    disabled={footerLoading}
-                    className="flex-1 min-w-0 px-3 py-2 text-sm bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors duration-200"
-                  />
-                  <button
-                    type="submit"
-                    disabled={footerLoading}
-                    className="px-3 py-2 text-sm font-semibold text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label="Subscribe to newsletter"
-                  >
-                    {footerLoading ? "..." : "Subscribe"}
-                  </button>
+                <form onSubmit={handleFooterSubmit}>
+                  <div className="flex gap-2">
+                    <label htmlFor="footer-email" className="sr-only">Email address for newsletter</label>
+                    <input
+                      id="footer-email"
+                      type="email"
+                      value={footerEmail}
+                      onChange={(e) => { setFooterEmail(e.target.value); setFooterError(null); }}
+                      placeholder="Your email"
+                      required
+                      disabled={footerLoading}
+                      aria-invalid={footerError ? "true" : undefined}
+                      aria-describedby={footerError ? "footer-email-error" : undefined}
+                      className="flex-1 min-w-0 px-3 py-2 text-sm bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-900 dark:text-surface-100 placeholder-surface-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-colors duration-200"
+                    />
+                    <button
+                      type="submit"
+                      disabled={footerLoading}
+                      className="px-3 py-2 text-sm font-semibold text-white bg-primary-500 hover:bg-primary-600 rounded-lg transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                      aria-label="Subscribe to newsletter"
+                    >
+                      {footerLoading ? "Subscribing..." : "Subscribe"}
+                    </button>
+                  </div>
+                  {footerError && (
+                    <p id="footer-email-error" className="mt-1.5 text-xs text-primary-600 dark:text-primary-400 animate-fade-in" role="alert">
+                      {footerError}
+                    </p>
+                  )}
                 </form>
               )}
             </div>

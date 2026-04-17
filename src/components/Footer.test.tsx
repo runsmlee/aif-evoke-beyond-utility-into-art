@@ -161,4 +161,69 @@ describe("Footer", () => {
     const brandLink = screen.getByLabelText("Evoke — Home");
     expect(brandLink).toHaveAttribute("href", "/");
   });
+
+  it("shows error message when newsletter subscription fails", async () => {
+    const { subscribeEmail } = await import("../utils/api");
+    vi.mocked(subscribeEmail).mockRejectedValueOnce(new Error("Network error"));
+
+    render(<Footer />);
+    const input = screen.getByLabelText("Email address for newsletter");
+    const submitButton = screen.getByLabelText("Subscribe to newsletter");
+
+    fireEvent.change(input, { target: { value: "test@example.com" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      const alert = screen.getByRole("alert");
+      expect(alert).toBeDefined();
+      expect(alert.textContent).toMatch(/try again/i);
+    });
+  });
+
+  it("clears error when user submits again after failure", async () => {
+    const { subscribeEmail } = await import("../utils/api");
+    vi.mocked(subscribeEmail)
+      .mockRejectedValueOnce(new Error("Network error"))
+      .mockResolvedValueOnce(undefined);
+
+    render(<Footer />);
+    const input = screen.getByLabelText("Email address for newsletter");
+    const submitButton = screen.getByLabelText("Subscribe to newsletter");
+
+    // First submit fails
+    fireEvent.change(input, { target: { value: "test@example.com" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByRole("alert")).toBeDefined();
+    });
+
+    // Second submit succeeds
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/subscribed/i)).toBeDefined();
+      expect(screen.queryByRole("alert")).toBeNull();
+    });
+  });
+
+  it("shows loading state while subscribing", async () => {
+    const { subscribeEmail } = await import("../utils/api");
+    vi.mocked(subscribeEmail).mockImplementationOnce(
+      () => new Promise((resolve) => setTimeout(resolve, 100)),
+    );
+
+    render(<Footer />);
+    const input = screen.getByLabelText("Email address for newsletter");
+    const submitButton = screen.getByLabelText("Subscribe to newsletter");
+
+    fireEvent.change(input, { target: { value: "test@example.com" } });
+    fireEvent.click(submitButton);
+
+    expect(screen.getByText("Subscribing...")).toBeDefined();
+
+    await waitFor(() => {
+      expect(screen.getByText(/subscribed/i)).toBeDefined();
+    });
+  });
 });
