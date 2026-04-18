@@ -122,9 +122,9 @@ export function HowItWorks() {
             aria-hidden="true"
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6">
+          <ol className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6" aria-label="Steps to get started">
             {steps.map((step, index) => (
-              <div
+              <li
                 key={step.title}
                 className={`relative flex md:flex-col items-start md:items-center gap-4 md:gap-0 md:text-center md:py-4 group ${
                   isInView ? "animate-slide-up" : "opacity-0"
@@ -151,9 +151,9 @@ export function HowItWorks() {
                     {step.description}
                   </p>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </div>
     </section>

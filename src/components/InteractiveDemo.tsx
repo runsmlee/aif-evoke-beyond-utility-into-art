@@ -151,6 +151,8 @@ function InteractiveDemo() {
     [activeColors],
   );
 
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   // Auto-save palette to history
   const savePaletteToHistory = useCallback((colors: ColorSwatch[], angle: number) => {
     const palette: SavedPalette = {
@@ -168,8 +170,11 @@ function InteractiveDemo() {
   }, []);
 
   const showToast = useCallback((message: string) => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
     setToastMessage(message);
-    setTimeout(() => setToastMessage(null), 2000);
+    toastTimeoutRef.current = setTimeout(() => setToastMessage(null), 2000);
   }, []);
 
   const selectPalette = useCallback((index: number) => {
@@ -201,18 +206,26 @@ function InteractiveDemo() {
     savePaletteToHistory(newColors, newAngle);
   }, [activeColors, savePaletteToHistory]);
 
+  const copiedColorRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copyColor = useCallback((hex: string) => {
     navigator.clipboard.writeText(hex).catch(() => {
       // Silently fail - clipboard API may not be available
     });
+    if (copiedColorRef.current) {
+      clearTimeout(copiedColorRef.current);
+    }
     setCopiedColor(hex);
-    setTimeout(() => setCopiedColor(null), 1500);
+    copiedColorRef.current = setTimeout(() => setCopiedColor(null), 1500);
   }, []);
 
+  const copiedCssRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copyCssBlock = useCallback(() => {
     navigator.clipboard.writeText(cssBlock).catch(() => {});
+    if (copiedCssRef.current) {
+      clearTimeout(copiedCssRef.current);
+    }
     setCopiedCss(true);
-    setTimeout(() => setCopiedCss(false), 1500);
+    copiedCssRef.current = setTimeout(() => setCopiedCss(false), 1500);
   }, [cssBlock]);
 
   const copyTailwindConfig = useCallback(() => {

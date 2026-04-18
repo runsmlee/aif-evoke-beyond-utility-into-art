@@ -119,12 +119,12 @@ function Philosophy() {
           <span
             key={word.text}
             className={`absolute text-white font-extrabold text-lg sm:text-2xl select-none transition-all duration-700 ${
-              isInView ? "opacity-100" : "opacity-0"
+              isInView ? "" : "opacity-0"
             }`}
             style={{
               left: `${word.x}%`,
               top: `${word.y}%`,
-              opacity: word.opacity,
+              ...(isInView ? { opacity: word.opacity } : {}),
               transform: `scale(${word.scale}) rotate(${word.rotation}deg)`,
               animationDelay: `${i * 0.2}s`,
               transition: `opacity 1s ease ${i * 0.2}s`,
@@ -205,16 +205,18 @@ function Philosophy() {
               <button
                 key={word}
                 type="button"
-                className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-medium border transition-all duration-300 cursor-default ${
+                className={`px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-sm font-medium border transition-all duration-300 ${
                   hoveredIndex === i
                     ? "bg-primary-500 text-white border-primary-500 shadow-lg shadow-primary-500/25"
-                    : "bg-transparent text-surface-300 border-surface-700 hover:border-primary-500/50 hover:text-primary-400"
+                    : "bg-transparent text-surface-300 border-surface-700 hover:border-primary-500/50 hover:text-primary-400 focus-visible:border-primary-500/50 focus-visible:text-primary-400"
                 }`}
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 onFocus={() => setHoveredIndex(i)}
                 onBlur={() => setHoveredIndex(null)}
-                aria-label={word}
+                onClick={() => setHoveredIndex(hoveredIndex === i ? null : i)}
+                aria-pressed={hoveredIndex === i}
+                aria-label={`${word} design principle`}
               >
                 {word}
               </button>

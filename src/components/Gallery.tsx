@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useInView } from "../hooks/useInView";
 import { GalleryModal, type GalleryModalItem } from "./GalleryModal";
 
@@ -145,7 +145,7 @@ export function Gallery() {
   const { ref, isInView } = useInView({ threshold: 0.05 });
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  const categories = ["All", ...new Set(galleryItems.map((item) => item.category))];
+  const categories = useMemo(() => ["All", ...new Set(galleryItems.map((item) => item.category))], []);
   const filteredItems =
     activeFilter === "All"
       ? galleryItems

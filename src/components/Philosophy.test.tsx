@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { Philosophy } from "./Philosophy";
 
@@ -22,10 +22,10 @@ describe("Philosophy", () => {
 
   it("renders interactive word chips", () => {
     render(<Philosophy />);
-    expect(screen.getByLabelText("Intentional")).toBeDefined();
-    expect(screen.getByLabelText("Emotional")).toBeDefined();
-    expect(screen.getByLabelText("Meticulous")).toBeDefined();
-    expect(screen.getByLabelText("Human")).toBeDefined();
+    expect(screen.getByLabelText("Intentional design principle")).toBeDefined();
+    expect(screen.getByLabelText("Emotional design principle")).toBeDefined();
+    expect(screen.getByLabelText("Meticulous design principle")).toBeDefined();
+    expect(screen.getByLabelText("Human design principle")).toBeDefined();
   });
 
   it("has the philosophy section with aria-labelledby", () => {
@@ -39,5 +39,26 @@ describe("Philosophy", () => {
     expect(screen.getByText("Imagine")).toBeDefined();
     expect(screen.getByText("Craft")).toBeDefined();
     expect(screen.getByText("Feel")).toBeDefined();
+  });
+
+  it("word chips have aria-pressed attribute for accessibility", () => {
+    render(<Philosophy />);
+    const intentionalChip = screen.getByLabelText("Intentional design principle");
+    expect(intentionalChip).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(intentionalChip);
+    expect(intentionalChip).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("word chips respond to click to toggle pressed state", () => {
+    render(<Philosophy />);
+    const emotionalChip = screen.getByLabelText("Emotional design principle");
+    expect(emotionalChip).toHaveAttribute("aria-pressed", "false");
+
+    fireEvent.click(emotionalChip);
+    expect(emotionalChip).toHaveAttribute("aria-pressed", "true");
+
+    fireEvent.click(emotionalChip);
+    expect(emotionalChip).toHaveAttribute("aria-pressed", "false");
   });
 });

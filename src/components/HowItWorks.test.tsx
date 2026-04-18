@@ -31,4 +31,12 @@ describe("HowItWorks", () => {
     expect(section).toBeDefined();
     expect(section?.getAttribute("aria-labelledby")).toBe("how-it-works-heading");
   });
+
+  it("uses ordered list semantics for the steps", () => {
+    render(<HowItWorks />);
+    const list = screen.getByRole("list", { name: /steps to get started/i });
+    expect(list).toBeDefined();
+    const listItems = screen.getAllByRole("listitem");
+    expect(listItems).toHaveLength(4);
+  });
 });
