@@ -8,16 +8,18 @@ interface UseInViewOptions {
 
 export function useInView(options: UseInViewOptions = {}) {
   const { threshold = 0.1, rootMargin = "0px", triggerOnce = true } = options;
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<HTMLElement | null>(null);
   const [isInView, setIsInView] = useState(false);
 
   const callbackRef = useCallback(
     (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry && entry.isIntersecting) {
-        setIsInView(true);
-      } else if (!triggerOnce) {
-        setIsInView(false);
+      const entry = entries[0];
+      if (entry) {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+        } else if (!triggerOnce) {
+          setIsInView(false);
+        }
       }
     },
     [triggerOnce],

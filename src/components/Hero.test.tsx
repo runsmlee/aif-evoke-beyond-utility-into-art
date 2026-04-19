@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
 // Mock ParticleCanvas before importing Hero
@@ -20,65 +20,82 @@ vi.mock("../hooks/useReducedMotion", () => ({
 import { Hero } from "./Hero";
 
 describe("Hero", () => {
-  it("renders the headline with rotating word", () => {
+  it("renders the headline with rotating word", async () => {
     render(<Hero />);
-    expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+    });
   });
 
-  it("renders the subtitle", () => {
+  it("renders the subtitle", async () => {
     render(<Hero />);
-    expect(
-      screen.getByText(/Evoke transforms everyday interactions/),
-    ).toBeDefined();
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Evoke transforms everyday interactions/),
+      ).toBeDefined();
+    });
   });
 
-  it("renders the 'Where Design Meets Art' badge", () => {
+  it("renders the 'Where Design Meets Art' badge", async () => {
     render(<Hero />);
-    expect(screen.getByText("Where Design Meets Art")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Where Design Meets Art")).toBeDefined();
+    });
   });
 
-  it("renders the Explore Evoke CTA", () => {
+  it("renders the Explore Evoke CTA", async () => {
     render(<Hero />);
-    expect(screen.getByText("Explore Evoke")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Explore Evoke")).toBeDefined();
+    });
   });
 
-  it("renders the Try the Demo CTA", () => {
+  it("renders the Try the Demo CTA", async () => {
     render(<Hero />);
-    expect(screen.getByText("Try the Demo")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Try the Demo")).toBeDefined();
+    });
   });
 
   // FIX 2: Verify fake stats are removed
   describe("Fake social proof removal (FIX 2)", () => {
-    it("does not render '10K+ Active Creators'", () => {
+    it("does not render '10K+ Active Creators'", async () => {
       render(<Hero />);
-      expect(
-        screen.queryByText("10K+ Active Creators"),
-      ).toBeNull();
+      await waitFor(() => {
+        expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+      });
+      expect(screen.queryByText("10K+ Active Creators")).toBeNull();
     });
 
-    it("does not render '50K+ Artworks Created'", () => {
+    it("does not render '50K+ Artworks Created'", async () => {
       render(<Hero />);
-      expect(
-        screen.queryByText("50K+ Artworks Created"),
-      ).toBeNull();
+      await waitFor(() => {
+        expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+      });
+      expect(screen.queryByText("50K+ Artworks Created")).toBeNull();
     });
 
-    it("does not render '99% Satisfaction Rate'", () => {
+    it("does not render '99% Satisfaction Rate'", async () => {
       render(<Hero />);
-      expect(
-        screen.queryByText("99% Satisfaction Rate"),
-      ).toBeNull();
+      await waitFor(() => {
+        expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+      });
+      expect(screen.queryByText("99% Satisfaction Rate")).toBeNull();
     });
 
-    it("does not render 'Trusted by creators worldwide'", () => {
+    it("does not render 'Trusted by creators worldwide'", async () => {
       render(<Hero />);
-      expect(
-        screen.queryByText(/Trusted by creators worldwide/),
-      ).toBeNull();
+      await waitFor(() => {
+        expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+      });
+      expect(screen.queryByText(/Trusted by creators worldwide/)).toBeNull();
     });
 
-    it("does not render any animated counter with percentage or K+ format", () => {
+    it("does not render any animated counter with percentage or K+ format", async () => {
       render(<Hero />);
+      await waitFor(() => {
+        expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+      });
       // No element should contain text matching "99%" or "K+" (fake stat patterns)
       const allText = document.body.textContent ?? "";
       expect(allText).not.toContain("99%");
@@ -88,49 +105,63 @@ describe("Hero", () => {
 
   // FIX 2: Verify honest capability descriptions are present
   describe("Honest capability descriptions (FIX 2)", () => {
-    it("renders 'Infinite Combinations'", () => {
+    it("renders 'Infinite Combinations'", async () => {
       render(<Hero />);
-      expect(screen.getByText("Infinite Combinations")).toBeDefined();
+      await waitFor(() => {
+        expect(screen.getByText("Infinite Combinations")).toBeDefined();
+      });
     });
 
-    it("renders 'Zero Setup'", () => {
+    it("renders 'Zero Setup'", async () => {
       render(<Hero />);
-      expect(screen.getByText("Zero Setup")).toBeDefined();
+      await waitFor(() => {
+        expect(screen.getByText("Zero Setup")).toBeDefined();
+      });
     });
 
-    it("renders 'Open Source'", () => {
+    it("renders 'Open Source'", async () => {
       render(<Hero />);
-      expect(screen.getByText("Open Source")).toBeDefined();
+      await waitFor(() => {
+        expect(screen.getByText("Open Source")).toBeDefined();
+      });
     });
 
-    it("renders subtitle 'Any hex color, any angle'", () => {
+    it("renders subtitle 'Any hex color, any angle'", async () => {
       render(<Hero />);
-      expect(screen.getByText("Any hex color, any angle")).toBeDefined();
+      await waitFor(() => {
+        expect(screen.getByText("Any hex color, any angle")).toBeDefined();
+      });
     });
 
-    it("renders subtitle 'Open it, create it, copy it'", () => {
+    it("renders subtitle 'Open it, create it, copy it'", async () => {
       render(<Hero />);
-      expect(
-        screen.getByText("Open it, create it, copy it"),
-      ).toBeDefined();
+      await waitFor(() => {
+        expect(screen.getByText("Open it, create it, copy it")).toBeDefined();
+      });
     });
 
-    it("renders subtitle 'No accounts, no tracking'", () => {
+    it("renders subtitle 'No accounts, no tracking'", async () => {
       render(<Hero />);
-      expect(
-        screen.getByText("No accounts, no tracking"),
-      ).toBeDefined();
+      await waitFor(() => {
+        expect(screen.getByText("No accounts, no tracking")).toBeDefined();
+      });
     });
 
-    it("renders all three capability cards with icons", () => {
+    it("renders all three capability cards with icons", async () => {
       render(<Hero />);
+      await waitFor(() => {
+        expect(screen.getByText("Infinite Combinations")).toBeDefined();
+      });
       // Each capability should have an SVG icon
       const svgs = document.querySelectorAll("section svg");
       expect(svgs.length).toBeGreaterThanOrEqual(3);
     });
 
-    it("renders capability section with border-top separator", () => {
+    it("renders capability section with border-top separator", async () => {
       render(<Hero />);
+      await waitFor(() => {
+        expect(screen.getByText("Infinite Combinations")).toBeDefined();
+      });
       // Verify the capabilities section exists by checking for its children
       const capabilitiesSection = screen.getByText("Infinite Combinations").closest("div");
       expect(capabilitiesSection).not.toBeNull();

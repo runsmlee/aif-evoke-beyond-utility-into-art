@@ -10,7 +10,7 @@ export function ThemeToggle({ theme, toggleTheme }: ThemeToggleProps) {
     <button
       type="button"
       onClick={toggleTheme}
-      className="relative w-9 h-9 flex items-center justify-center rounded-xl text-surface-600 hover:text-surface-900 hover:bg-surface-100 dark:text-surface-400 dark:hover:text-surface-100 dark:hover:bg-surface-800 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-900"
+      className="relative w-11 h-11 flex items-center justify-center rounded-xl text-surface-600 hover:text-surface-900 hover:bg-surface-100 dark:text-surface-400 dark:hover:text-surface-100 dark:hover:bg-surface-800 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-900"
       aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
     >
       {/* Sun icon (shown in dark mode) */}
