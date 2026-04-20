@@ -346,6 +346,27 @@ body {
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
+/* Shimmer background utility for skeleton loaders */
+.shimmer-bg {
+  background-size: 200% 100%;
+  background-image: linear-gradient(
+    90deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 75%
+  );
+}
+
+.shimmer-bg-subtle {
+  background-size: 200% 100%;
+  background-image: linear-gradient(
+    90deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 75%
+  );
+}
+
 /* Gradient text shimmer enhancement */
 .gradient-text-shimmer {
   background: linear-gradient(

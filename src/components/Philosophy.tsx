@@ -103,7 +103,7 @@ function Philosophy() {
   return (
     <section
       ref={ref}
-      className="relative py-24 sm:py-32 lg:py-40 overflow-hidden bg-surface-900 dark:bg-black"
+      className="relative py-24 sm:py-32 lg:py-40 overflow-hidden bg-surface-900 dark:bg-black scroll-mt-20"
       aria-labelledby="philosophy-heading"
     >
       {/* Particle canvas */}

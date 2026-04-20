@@ -116,7 +116,7 @@ export function Faq() {
     <section
       id="faq"
       ref={ref}
-      className="py-20 sm:py-28 bg-surface-50/80 dark:bg-surface-900/50"
+      className="py-20 sm:py-28 bg-surface-50/80 dark:bg-surface-900/50 scroll-mt-20"
       aria-labelledby="faq-heading"
     >
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

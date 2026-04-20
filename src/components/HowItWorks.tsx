@@ -70,7 +70,7 @@ export function HowItWorks() {
     <section
       id="how-it-works"
       ref={ref}
-      className="py-20 sm:py-28"
+      className="py-20 sm:py-28 scroll-mt-20"
       aria-labelledby="how-it-works-heading"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

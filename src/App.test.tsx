@@ -32,20 +32,16 @@ describe("App", () => {
     expect(main).toHaveAttribute("id", "main-content");
   });
 
-  it("renders the Evoke brand name after lazy-loaded Header resolves", async () => {
+  it("renders the Evoke brand name in the Header", () => {
     render(<App />);
-    await waitFor(() => {
-      const brandElements = screen.getAllByText("Evoke");
-      expect(brandElements.length).toBeGreaterThan(0);
-    });
+    const brandElements = screen.getAllByText("Evoke");
+    expect(brandElements.length).toBeGreaterThan(0);
   });
 
-  it("has accessible main navigation after Header loads", async () => {
+  it("has accessible main navigation in the Header", () => {
     render(<App />);
-    await waitFor(() => {
-      const nav = screen.getByRole("navigation", { name: "Main navigation" });
-      expect(nav).toBeDefined();
-    });
+    const nav = screen.getByRole("navigation", { name: "Main navigation" });
+    expect(nav).toBeDefined();
   });
 
   it("renders lazy-loaded sections after suspense resolves", async () => {
