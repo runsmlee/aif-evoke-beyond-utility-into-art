@@ -27,9 +27,9 @@ Evoke is a creative productivity tool that transforms raw ideas into polished de
 - Vitest + React Testing Library
 
 ## Design Tokens
-- **Primary Color**: #7C3AED (purple-600)
-- **Typography**: sans-serif, energetic tone
-- **Aesthetic**: Experimental — canvas animations, gradient palettes, scroll-triggered effects
+- **Primary Color**: #EF4444 (red-500)
+- **Typography**: system-ui, professional tone
+- **Aesthetic**: Balanced — purposeful animations, gradient accents, scroll-triggered reveals
 
 ## Acceptance Criteria
 - All sections render correctly on mobile (320px+) and desktop

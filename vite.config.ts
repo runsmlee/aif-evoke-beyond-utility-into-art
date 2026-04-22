@@ -8,6 +8,7 @@ export default defineConfig({
     postcss: "./postcss.config.js",
   },
   build: {
+    target: "es2020",
     rollupOptions: {
       output: {
         manualChunks(id: string) {
@@ -17,6 +18,10 @@ export default defineConfig({
           return undefined;
         },
       },
+    },
+    esbuild: {
+      drop: ["console"],
+      target: "es2020",
     },
   },
   test: {

@@ -327,6 +327,13 @@ body {
   animation: gradient-rotate 4s linear infinite;
 }
 
+/* Fallback for browsers without @property support (Firefox, older Safari) */
+@supports not (background: paint(something)) {
+  .animated-border::before {
+    background: linear-gradient(135deg, #EF4444, #f97316, #EF4444);
+  }
+}
+
 @keyframes gradient-rotate {
   0% {
     --gradient-angle: 0deg;
@@ -382,4 +389,75 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gradient-shift 4s ease-in-out infinite;
+}
+
+/* Scrollbar styling for dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--color-surface-900);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--color-surface-700);
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-surface-600);
+}
+
+/* Firefox scrollbar */
+.dark * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-700) var(--color-surface-900);
+}
+
+/* Print styles */
+@media print {
+  .scroll-progress,
+  .skip-link,
+  .back-to-top,
+  [aria-label="Scroll to top of page"],
+  canvas,
+  .animate-float,
+  .animate-pulse-slow,
+  .animate-scroll-logos,
+  .animate-shimmer {
+    display: none !important;
+  }
+
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  .dark body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  .gradient-text {
+    -webkit-text-fill-color: #EF4444;
+    color: #EF4444;
+    background: none;
+  }
 }

@@ -110,6 +110,7 @@ function Philosophy() {
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
+        style={{ willChange: "transform" }}
         aria-hidden="true"
       />
 

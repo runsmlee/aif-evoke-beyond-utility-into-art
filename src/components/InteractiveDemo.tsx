@@ -290,7 +290,7 @@ function InteractiveDemo() {
             {/* Preview Area */}
             <div
               className="h-48 sm:h-64 relative transition-all duration-500"
-              style={{ background: gradient }}
+              style={{ background: gradient, willChange: "background" }}
               role="img"
               aria-label={`Gradient preview using ${activeColors.length} colors at ${gradientAngle} degrees`}
             >
