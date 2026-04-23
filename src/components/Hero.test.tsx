@@ -170,4 +170,26 @@ describe("Hero", () => {
       expect(parentEl).not.toBeNull();
     });
   });
+
+  describe("Scroll indicator", () => {
+    it("renders a scroll indicator element", async () => {
+      render(<Hero />);
+      await waitFor(() => {
+        expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+      });
+      // The scroll label should be rendered
+      expect(screen.getByText("Scroll")).toBeDefined();
+    });
+
+    it("scroll indicator is hidden from screen readers", async () => {
+      render(<Hero />);
+      await waitFor(() => {
+        expect(screen.getByText(/Beyond Utility/)).toBeDefined();
+      });
+      // The scroll indicator container should have aria-hidden
+      const scrollLabel = screen.getByText("Scroll");
+      const container = scrollLabel.closest("div");
+      expect(container?.getAttribute("aria-hidden")).toBe("true");
+    });
+  });
 });

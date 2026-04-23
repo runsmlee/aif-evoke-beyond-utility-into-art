@@ -32,4 +32,36 @@ describe("Features", () => {
     expect(section).toBeDefined();
     expect(section?.getAttribute("aria-labelledby")).toBe("features-heading");
   });
+
+  it("has the features section id for anchor navigation", () => {
+    render(<Features />);
+    const section = document.getElementById("features");
+    expect(section).not.toBeNull();
+  });
+
+  it("renders each feature card with a heading", () => {
+    render(<Features />);
+    const featureHeadings = [
+      "Intentional Design",
+      "Emotional Resonance",
+      "Craftsmanship",
+      "Creative Tools",
+      "Seamless Flow",
+      "Community",
+    ];
+    for (const title of featureHeadings) {
+      const heading = screen.getByRole("heading", { level: 3, name: title });
+      expect(heading).toBeDefined();
+    }
+  });
+
+  it("renders feature section label", () => {
+    render(<Features />);
+    expect(screen.getByText("Features")).toBeDefined();
+  });
+
+  it("renders the section subtitle", () => {
+    render(<Features />);
+    expect(screen.getByText(/Every feature is crafted/)).toBeDefined();
+  });
 });

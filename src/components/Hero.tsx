@@ -206,6 +206,22 @@ export function Hero() {
               ))}
             </div>
           </div>
+
+          {/* Scroll indicator */}
+          <div
+            className={`mt-16 flex flex-col items-center gap-2 ${
+              isInView ? "animate-fade-in" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.7s" }}
+            aria-hidden="true"
+          >
+            <span className="text-xs font-medium text-surface-400 dark:text-surface-500 uppercase tracking-widest">
+              Scroll
+            </span>
+            <div className="w-5 h-8 rounded-full border-2 border-surface-300 dark:border-surface-600 flex items-start justify-center pt-1.5">
+              <div className="w-1 h-2 rounded-full bg-surface-400 dark:bg-surface-500 animate-bounce" />
+            </div>
+          </div>
         </div>
       </div>
     </section>

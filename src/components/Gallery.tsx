@@ -273,6 +273,13 @@ export function Gallery() {
         </div>
       </div>
 
+      {/* Screen reader live region for filter announcements */}
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {activeFilter === "All"
+          ? `Showing all ${filteredItems.length} items`
+          : `${filteredItems.length} ${activeFilter} item${filteredItems.length !== 1 ? "s" : ""}`}
+      </div>
+
       {/* Gallery Modal */}
       {selectedItem && (
         <GalleryModal item={selectedItem} onClose={closeModal} />

@@ -1,5 +1,6 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useInView } from "../hooks/useInView";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 interface FaqItem {
   id: string;
@@ -44,28 +45,35 @@ function FaqItemComponent({
   item,
   isOpen,
   onToggle,
+  onKeyDown,
+  prefersReducedMotion,
+  buttonRef,
 }: {
   item: FaqItem;
   isOpen: boolean;
   onToggle: () => void;
+  onKeyDown: (e: React.KeyboardEvent) => void;
+  prefersReducedMotion: boolean;
+  buttonRef: (el: HTMLButtonElement | null) => void;
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [maxHeight, setMaxHeight] = useState("0px");
 
-  useEffect(() => {
-    if (isOpen && contentRef.current) {
-      setMaxHeight(`${contentRef.current.scrollHeight}px`);
-    } else {
-      setMaxHeight("0px");
-    }
-  }, [isOpen]);
+  const transitionStyle = prefersReducedMotion
+    ? { overflow: isOpen ? "visible" : "hidden", maxHeight: isOpen ? "none" : "0px" }
+    : {
+        maxHeight: isOpen ? `${contentRef.current?.scrollHeight ?? 500}px` : "0px",
+        overflow: "hidden",
+        transition: "max-height 0.3s ease-out",
+      };
 
   return (
     <div className="border-b border-surface-200 dark:border-surface-700 last:border-b-0">
       <h3>
         <button
           type="button"
+          ref={buttonRef}
           onClick={onToggle}
+          onKeyDown={onKeyDown}
           className="w-full flex items-center justify-between py-5 px-1 text-left text-base font-semibold text-surface-900 dark:text-white hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-950 rounded-lg group"
           aria-expanded={isOpen}
           aria-controls={`${item.id}-panel`}
@@ -92,7 +100,8 @@ function FaqItemComponent({
         id={`${item.id}-panel`}
         role="region"
         aria-labelledby={`${item.id}-button`}
-        style={{ maxHeight, overflow: "hidden", transition: "max-height 0.3s ease-out" }}
+        hidden={!isOpen && prefersReducedMotion}
+        style={transitionStyle}
       >
         <div ref={contentRef}>
           <p className="pb-5 px-1 text-surface-500 dark:text-surface-400 leading-relaxed">
@@ -107,10 +116,36 @@ function FaqItemComponent({
 export function Faq() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
   const [openId, setOpenId] = useState<string | null>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const handleToggle = useCallback((id: string) => {
     setOpenId((prev) => (prev === id ? null : id));
   }, []);
+
+  const handleItemKeyDown = useCallback(
+    (e: React.KeyboardEvent, index: number) => {
+      let nextIndex = index;
+      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+        e.preventDefault();
+        nextIndex = (index + 1) % faqItems.length;
+      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        nextIndex = (index - 1 + faqItems.length) % faqItems.length;
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        nextIndex = 0;
+      } else if (e.key === "End") {
+        e.preventDefault();
+        nextIndex = faqItems.length - 1;
+      }
+
+      if (nextIndex !== index) {
+        buttonRefs.current[nextIndex]?.focus();
+      }
+    },
+    [],
+  );
 
   return (
     <section
@@ -149,17 +184,22 @@ export function Faq() {
 
         {/* FAQ List */}
         <div
+          role="group"
+          aria-label="Frequently asked questions"
           className={`bg-white dark:bg-surface-800 rounded-2xl border border-surface-200 dark:border-surface-700 px-6 sm:px-8 ${
             isInView ? "animate-slide-up" : "opacity-0"
           }`}
           style={{ animationDelay: "0.2s" }}
         >
-          {faqItems.map((item) => (
+          {faqItems.map((item, index) => (
             <FaqItemComponent
               key={item.id}
               item={item}
               isOpen={openId === item.id}
               onToggle={() => handleToggle(item.id)}
+              onKeyDown={(e) => handleItemKeyDown(e, index)}
+              prefersReducedMotion={prefersReducedMotion}
+              buttonRef={(el) => { buttonRefs.current[index] = el; }}
             />
           ))}
         </div>

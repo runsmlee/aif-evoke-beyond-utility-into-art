@@ -43,6 +43,8 @@ function scrollToSection(href: string) {
   const element = document.getElementById(id);
   if (element) {
     element.scrollIntoView({ behavior: "smooth", block: "start" });
+    // Update URL hash for shareable links
+    history.pushState(null, "", href);
   }
 }
 

@@ -136,4 +136,29 @@ describe("Gallery", () => {
     const section = document.getElementById("gallery");
     expect(section).not.toBeNull();
   });
+
+  it("announces filtered item count for screen readers", () => {
+    render(<Gallery />);
+
+    // The live region should exist and announce all items by default
+    const liveRegion = document.querySelector("[aria-live='polite']");
+    expect(liveRegion).not.toBeNull();
+    expect(liveRegion?.textContent).toContain("Showing all 6 items");
+
+    // Filter to a specific category
+    fireEvent.click(screen.getByRole("tab", { name: "Motion" }));
+
+    // Should announce the filtered count
+    expect(liveRegion?.textContent).toContain("1 Motion item");
+  });
+
+  it("announces plural form correctly when multiple items match filter", () => {
+    render(<Gallery />);
+
+    const liveRegion = document.querySelector("[aria-live='polite']");
+    expect(liveRegion).not.toBeNull();
+
+    // "All" filter shows all items with plural
+    expect(liveRegion?.textContent).toContain("Showing all 6 items");
+  });
 });
