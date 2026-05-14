@@ -237,9 +237,13 @@ export function Pricing() {
               isInView ? "animate-fade-in" : "opacity-0"
             }`}
             style={{ animationDelay: "0.2s" }}
+            role="radiogroup"
+            aria-label="Billing period"
           >
             <button
               type="button"
+              role="radio"
+              aria-checked={billing === "monthly"}
               onClick={() => selectBilling("monthly")}
               className={`text-sm font-medium cursor-pointer transition-colors duration-200 ${
                 billing === "monthly"
@@ -268,6 +272,8 @@ export function Pricing() {
             </button>
             <button
               type="button"
+              role="radio"
+              aria-checked={billing === "annual"}
               onClick={() => selectBilling("annual")}
               className={`text-sm font-medium cursor-pointer transition-colors duration-200 ${
                 billing === "annual"

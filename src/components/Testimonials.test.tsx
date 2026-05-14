@@ -125,4 +125,55 @@ describe("Testimonials", () => {
     expect(quotes[1]).not.toHaveAttribute("aria-hidden");
     expect(quotes[2]).toHaveAttribute("aria-hidden", "true");
   });
+
+  it("renders prev and next navigation buttons", () => {
+    render(<Testimonials />);
+    expect(screen.getByLabelText("Previous testimonial")).toBeDefined();
+    expect(screen.getByLabelText("Next testimonial")).toBeDefined();
+  });
+
+  it("navigates to next testimonial when next button is clicked", () => {
+    render(<Testimonials />);
+    const nextButton = screen.getByLabelText("Next testimonial");
+    const quotes = document.querySelectorAll("blockquote");
+
+    // Initially first slide is active
+    expect(quotes[0]).not.toHaveAttribute("aria-hidden");
+
+    // Click next
+    fireEvent.click(nextButton);
+
+    // Second slide should now be active
+    expect(quotes[0]).toHaveAttribute("aria-hidden", "true");
+    expect(quotes[1]).not.toHaveAttribute("aria-hidden");
+  });
+
+  it("navigates to previous testimonial when prev button is clicked", () => {
+    render(<Testimonials />);
+    const prevButton = screen.getByLabelText("Previous testimonial");
+    const quotes = document.querySelectorAll("blockquote");
+
+    // Initially first slide (index 0) is active, prev should wrap to last
+    fireEvent.click(prevButton);
+
+    // Last slide should now be active
+    expect(quotes[0]).toHaveAttribute("aria-hidden", "true");
+    expect(quotes[2]).not.toHaveAttribute("aria-hidden");
+  });
+
+  it("wraps around when navigating past the last testimonial", () => {
+    render(<Testimonials />);
+    const nextButton = screen.getByLabelText("Next testimonial");
+    const quotes = document.querySelectorAll("blockquote");
+
+    // Click next three times (wraps from index 2 back to 0)
+    fireEvent.click(nextButton); // -> index 1
+    fireEvent.click(nextButton); // -> index 2
+    fireEvent.click(nextButton); // -> index 0 (wrap)
+
+    // First slide should be active again
+    expect(quotes[0]).not.toHaveAttribute("aria-hidden");
+    expect(quotes[1]).toHaveAttribute("aria-hidden", "true");
+    expect(quotes[2]).toHaveAttribute("aria-hidden", "true");
+  });
 });

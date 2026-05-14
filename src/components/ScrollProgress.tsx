@@ -29,7 +29,7 @@ export function ScrollProgress() {
   return (
     <div
       className="scroll-progress"
-      style={{ width: `${progress}%` }}
+      style={{ width: "100%", transform: `scaleX(${progress / 100})`, transformOrigin: "left" }}
       role="progressbar"
       aria-valuenow={Math.round(progress)}
       aria-valuemin={0}

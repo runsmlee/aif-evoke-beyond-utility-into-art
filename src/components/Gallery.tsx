@@ -134,6 +134,56 @@ export function Gallery() {
     setSelectedItem(null);
   }, []);
 
+  const handleModalPrev = useCallback(() => {
+    if (!selectedItem) return;
+    const currentFiltered = activeFilter === "All"
+      ? galleryItems
+      : galleryItems.filter((item) => item.category === activeFilter);
+    const currentIndex = currentFiltered.findIndex((item) => item.id === selectedItem.id);
+    if (currentIndex <= 0) return;
+    const prevItem = currentFiltered[currentIndex - 1];
+    if (prevItem) {
+      setSelectedItem({
+        id: prevItem.id,
+        title: prevItem.title,
+        category: prevItem.category,
+        gradient: prevItem.gradient,
+        pattern: prevItem.pattern,
+        description: prevItem.description,
+      });
+    }
+  }, [selectedItem, activeFilter]);
+
+  const handleModalNext = useCallback(() => {
+    if (!selectedItem) return;
+    const currentFiltered = activeFilter === "All"
+      ? galleryItems
+      : galleryItems.filter((item) => item.category === activeFilter);
+    const currentIndex = currentFiltered.findIndex((item) => item.id === selectedItem.id);
+    if (currentIndex === -1 || currentIndex >= currentFiltered.length - 1) return;
+    const nextItem = currentFiltered[currentIndex + 1];
+    if (nextItem) {
+      setSelectedItem({
+        id: nextItem.id,
+        title: nextItem.title,
+        category: nextItem.category,
+        gradient: nextItem.gradient,
+        pattern: nextItem.pattern,
+        description: nextItem.description,
+      });
+    }
+  }, [selectedItem, activeFilter]);
+
+  const currentFilteredItems = activeFilter === "All"
+    ? galleryItems
+    : galleryItems.filter((item) => item.category === activeFilter);
+  const modalHasPrev = selectedItem
+    ? currentFilteredItems.findIndex((item) => item.id === selectedItem.id) > 0
+    : false;
+  const modalHasNext = selectedItem
+    ? currentFilteredItems.findIndex((item) => item.id === selectedItem.id) < currentFilteredItems.length - 1
+    : false;
+
   return (
     <section
       id="gallery"
@@ -282,7 +332,14 @@ export function Gallery() {
 
       {/* Gallery Modal */}
       {selectedItem && (
-        <GalleryModal item={selectedItem} onClose={closeModal} />
+        <GalleryModal
+          item={selectedItem}
+          onClose={closeModal}
+          onPrev={handleModalPrev}
+          onNext={handleModalNext}
+          hasPrev={modalHasPrev}
+          hasNext={modalHasNext}
+        />
       )}
     </section>
   );

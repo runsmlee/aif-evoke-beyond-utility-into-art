@@ -88,4 +88,107 @@ describe("GalleryModal", () => {
     // Body scroll should be restored
     expect(document.body.style.overflow).toBe("");
   });
+
+  it("renders prev and next navigation buttons when handlers provided", () => {
+    render(
+      <GalleryModal
+        item={mockItem}
+        onClose={vi.fn()}
+        onPrev={vi.fn()}
+        onNext={vi.fn()}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+    expect(screen.getByLabelText("Previous artwork")).toBeDefined();
+    expect(screen.getByLabelText("Next artwork")).toBeDefined();
+  });
+
+  it("does not render prev/next buttons when handlers not provided", () => {
+    render(<GalleryModal item={mockItem} onClose={vi.fn()} />);
+    expect(screen.queryByLabelText("Previous artwork")).toBeNull();
+    expect(screen.queryByLabelText("Next artwork")).toBeNull();
+  });
+
+  it("calls onPrev when previous button is clicked", () => {
+    const onPrev = vi.fn();
+    render(
+      <GalleryModal
+        item={mockItem}
+        onClose={vi.fn()}
+        onPrev={onPrev}
+        onNext={vi.fn()}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+    fireEvent.click(screen.getByLabelText("Previous artwork"));
+    expect(onPrev).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls onNext when next button is clicked", () => {
+    const onNext = vi.fn();
+    render(
+      <GalleryModal
+        item={mockItem}
+        onClose={vi.fn()}
+        onPrev={vi.fn()}
+        onNext={onNext}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+    fireEvent.click(screen.getByLabelText("Next artwork"));
+    expect(onNext).toHaveBeenCalledTimes(1);
+  });
+
+  it("navigates with arrow keys when onPrev/onNext provided", () => {
+    const onPrev = vi.fn();
+    const onNext = vi.fn();
+    render(
+      <GalleryModal
+        item={mockItem}
+        onClose={vi.fn()}
+        onPrev={onPrev}
+        onNext={onNext}
+        hasPrev={true}
+        hasNext={true}
+      />
+    );
+    const dialog = screen.getByRole("dialog");
+    fireEvent.keyDown(dialog, { key: "ArrowLeft" });
+    expect(onPrev).toHaveBeenCalledTimes(1);
+    fireEvent.keyDown(dialog, { key: "ArrowRight" });
+    expect(onNext).toHaveBeenCalledTimes(1);
+  });
+
+  it("hides prev button when hasPrev is false", () => {
+    render(
+      <GalleryModal
+        item={mockItem}
+        onClose={vi.fn()}
+        onPrev={vi.fn()}
+        onNext={vi.fn()}
+        hasPrev={false}
+        hasNext={true}
+      />
+    );
+    expect(screen.queryByLabelText("Previous artwork")).toBeNull();
+    expect(screen.getByLabelText("Next artwork")).toBeDefined();
+  });
+
+  it("hides next button when hasNext is false", () => {
+    render(
+      <GalleryModal
+        item={mockItem}
+        onClose={vi.fn()}
+        onPrev={vi.fn()}
+        onNext={vi.fn()}
+        hasPrev={true}
+        hasNext={false}
+      />
+    );
+    expect(screen.getByLabelText("Previous artwork")).toBeDefined();
+    expect(screen.queryByLabelText("Next artwork")).toBeNull();
+  });
 });

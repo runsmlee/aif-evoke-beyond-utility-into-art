@@ -127,4 +127,28 @@ describe("Pricing", () => {
     expect(screen.getByText("For creators ready to push boundaries.")).toBeDefined();
     expect(screen.getByText("For teams crafting at the highest level.")).toBeDefined();
   });
+
+  it("wraps billing options in a radiogroup for accessibility", () => {
+    render(<Pricing />);
+    const radiogroup = screen.getByRole("radiogroup", { name: /billing period/i });
+    expect(radiogroup).toBeDefined();
+  });
+
+  it("billing options have correct radio roles", () => {
+    render(<Pricing />);
+    const radios = screen.getAllByRole("radio");
+    expect(radios.length).toBe(2);
+    // Monthly should be checked by default
+    expect(radios[0]).toHaveAttribute("aria-checked", "true");
+    expect(radios[1]).toHaveAttribute("aria-checked", "false");
+  });
+
+  it("switches radio checked state when billing changes", () => {
+    render(<Pricing />);
+    const toggle = screen.getByRole("switch");
+    fireEvent.click(toggle);
+    const radios = screen.getAllByRole("radio");
+    expect(radios[0]).toHaveAttribute("aria-checked", "false");
+    expect(radios[1]).toHaveAttribute("aria-checked", "true");
+  });
 });

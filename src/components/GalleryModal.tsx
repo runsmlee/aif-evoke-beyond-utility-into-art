@@ -13,11 +13,15 @@ interface GalleryModalItem {
 interface GalleryModalProps {
   item: GalleryModalItem;
   onClose: () => void;
+  onPrev?: () => void;
+  onNext?: () => void;
+  hasPrev?: boolean;
+  hasNext?: boolean;
 }
 
 export type { GalleryModalItem };
 
-export function GalleryModal({ item, onClose }: GalleryModalProps) {
+export function GalleryModal({ item, onClose, onPrev, onNext, hasPrev, hasNext }: GalleryModalProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
@@ -40,12 +44,24 @@ export function GalleryModal({ item, onClose }: GalleryModalProps) {
     };
   }, []);
 
-  // Focus trap: keep Tab/Shift+Tab within the modal
+  // Focus trap: keep Tab/Shift+Tab within the modal + arrow key navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
         onClose();
+        return;
+      }
+
+      if (e.key === "ArrowLeft" && onPrev) {
+        e.preventDefault();
+        onPrev();
+        return;
+      }
+
+      if (e.key === "ArrowRight" && onNext) {
+        e.preventDefault();
+        onNext();
         return;
       }
 
@@ -75,7 +91,7 @@ export function GalleryModal({ item, onClose }: GalleryModalProps) {
     // Use capture phase to intercept before React handlers
     document.addEventListener("keydown", handleKeyDown, true);
     return () => document.removeEventListener("keydown", handleKeyDown, true);
-  }, [onClose]);
+  }, [onClose, onPrev, onNext]);
 
   return (
     <div
@@ -120,7 +136,7 @@ export function GalleryModal({ item, onClose }: GalleryModalProps) {
             ref={closeRef}
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white"
+            className="absolute top-4 right-4 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
             aria-label="Close modal"
           >
             <svg
@@ -136,6 +152,34 @@ export function GalleryModal({ item, onClose }: GalleryModalProps) {
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>
+
+          {/* Previous button */}
+          {hasPrev && onPrev && (
+            <button
+              type="button"
+              onClick={onPrev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
+              aria-label="Previous artwork"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+          )}
+
+          {/* Next button */}
+          {hasNext && onNext && (
+            <button
+              type="button"
+              onClick={onNext}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
+              aria-label="Next artwork"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* Details */}
