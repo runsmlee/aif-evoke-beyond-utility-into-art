@@ -158,12 +158,16 @@ export function Footer() {
             <div className="mt-6">
               <p className="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Stay inspired</p>
               {footerSubmitted ? (
-                <p className="text-sm text-primary-600 dark:text-primary-400 flex items-center gap-1.5 animate-fade-in" role="status" aria-live="polite">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  You&apos;re subscribed!
-                </p>
+                <div className="flex items-center gap-2 animate-fade-in" role="status" aria-live="polite">
+                  <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary-600 dark:text-primary-400" aria-hidden="true">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-medium text-primary-600 dark:text-primary-400">
+                    You&apos;re subscribed!
+                  </p>
+                </div>
               ) : (
                 <form onSubmit={handleFooterSubmit}>
                   <div className="flex gap-2">

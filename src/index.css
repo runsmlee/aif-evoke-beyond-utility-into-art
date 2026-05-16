@@ -293,6 +293,17 @@ body {
   }
 }
 
+/* Performance: skip rendering off-screen sections */
+section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+/* Keep hero section always rendered */
+section[aria-label="Introduction"] {
+  content-visibility: visible;
+}
+
 /* Gallery item transition */
 .gallery-item-enter {
   animation: fade-scale 0.35s ease-out both;
@@ -421,6 +432,7 @@ body {
   .skip-link,
   .back-to-top,
   [aria-label="Scroll to top of page"],
+  [aria-label="Cookie consent"],
   canvas,
   .animate-float,
   .animate-pulse-slow,

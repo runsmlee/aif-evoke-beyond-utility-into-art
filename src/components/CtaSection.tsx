@@ -163,6 +163,7 @@ export function CtaSection() {
                   <button
                     type="submit"
                     disabled={loading}
+                    data-analytics="cta-submit"
                     className="px-6 py-3.5 text-sm sm:text-base font-semibold text-primary-600 bg-white rounded-xl hover:bg-surface-50 transition-all duration-200 shadow-lg shadow-primary-900/30 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-600 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? "Subscribing..." : "Get Started Free"}

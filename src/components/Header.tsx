@@ -187,6 +187,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
             </a>
             <a
               href="#contact"
+              data-analytics="header-get-started"
               className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-md shadow-primary-500/20 hover:shadow-lg hover:shadow-primary-500/30 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-900"
             >
               Get Started

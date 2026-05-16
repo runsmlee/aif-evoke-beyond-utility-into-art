@@ -171,6 +171,7 @@ function PricingCard({ tier, isInView, delay, billing }: PricingCardProps) {
 
       <a
         href="#contact"
+        data-analytics={`pricing-${tier.id}`}
         className={`block w-full text-center py-3 px-4 rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-900 ${
           tier.highlighted
             ? "bg-white dark:bg-surface-900 text-surface-900 dark:text-white hover:bg-surface-100 dark:hover:bg-surface-800 shadow-lg"

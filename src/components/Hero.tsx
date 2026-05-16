@@ -87,6 +87,7 @@ const RotatingWord = memo(function RotatingWord({ words, interval = 3000 }: { wo
       aria-atomic="true"
     >
       {words[index] ?? words[0]}
+      <span className="inline-block w-[3px] h-[0.85em] bg-primary-500 dark:bg-primary-400 ml-0.5 align-middle animate-pulse" aria-hidden="true" />
     </span>
   );
 });
@@ -119,11 +120,14 @@ export function Hero() {
         <div className="max-w-3xl mx-auto text-center">
           {/* Badge */}
           <div
-            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-900/30 border border-primary-200/80 dark:border-primary-800/50 mb-8 ${
+            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-50 dark:bg-primary-900/30 border border-primary-200/80 dark:border-primary-800/50 mb-8 shadow-sm ${
               isInView ? "animate-fade-in" : "opacity-0"
             }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-primary-500 animate-pulse" aria-hidden="true" />
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75" aria-hidden="true" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500" aria-hidden="true" />
+            </span>
             <span className="text-xs font-semibold text-primary-700 dark:text-primary-300 tracking-wide uppercase">
               Where Design Meets Art
             </span>
@@ -159,6 +163,7 @@ export function Hero() {
           >
             <a
               href="#features"
+              data-analytics="hero-explore"
               className="group inline-flex items-center px-7 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:from-primary-600 hover:to-primary-700 transition-all duration-200 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-950"
             >
               Explore Evoke
@@ -177,6 +182,7 @@ export function Hero() {
             </a>
             <a
               href="#demo"
+              data-analytics="hero-demo"
               className="inline-flex items-center px-7 py-3.5 text-base font-semibold text-surface-700 dark:text-surface-200 bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-xl hover:border-surface-300 dark:hover:border-surface-600 hover:bg-surface-50 dark:hover:bg-surface-700 hover:shadow-md transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-surface-950"
             >
               Try the Demo

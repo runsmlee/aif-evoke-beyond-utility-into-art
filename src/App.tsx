@@ -1,9 +1,10 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useCallback } from "react";
 import { Hero } from "./components/Hero";
 import { Header } from "./components/Header";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { ScrollProgress } from "./components/ScrollProgress";
 import { BackToTop } from "./components/BackToTop";
+import { CookieConsent } from "./components/CookieConsent";
 import { useTheme } from "./hooks/useTheme";
 const LogoCloud = lazy(() =>
   import("./components/LogoCloud").then((m) => ({ default: m.LogoCloud }))
@@ -61,9 +62,18 @@ function SectionLoader() {
 export function App() {
   const { theme, toggleTheme } = useTheme();
 
+  const handleSkipToContent = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const main = document.getElementById("main-content");
+    if (main) {
+      main.focus();
+      main.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-surface-950 transition-colors duration-300">
-      <a href="#main-content" className="skip-link">
+      <a href="#main-content" className="skip-link" onClick={handleSkipToContent}>
         Skip to content
       </a>
       <ScrollProgress />
@@ -129,6 +139,7 @@ export function App() {
         </Suspense>
       </ErrorBoundary>
       <BackToTop />
+      <CookieConsent />
     </div>
   );
 }

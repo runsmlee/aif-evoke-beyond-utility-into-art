@@ -597,10 +597,13 @@ function InteractiveDemo() {
       {/* Toast notification */}
       {toastMessage && (
         <div
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-surface-900 dark:bg-surface-100 text-white dark:text-surface-900 text-sm font-medium rounded-lg shadow-lg animate-fade-in z-50"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-surface-900 dark:bg-surface-100 text-white dark:text-surface-900 text-sm font-medium rounded-xl shadow-lg animate-fade-in z-50 flex items-center gap-2"
           role="status"
           aria-live="polite"
         >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
           {toastMessage}
         </div>
       )}
