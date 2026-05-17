@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 
 export function BackToTop() {
   const [visible, setVisible] = useState(false);
@@ -6,7 +6,8 @@ export function BackToTop() {
 
   useEffect(() => {
     const updateVisibility = () => {
-      setVisible(window.scrollY > 400);
+      const shouldShow = window.scrollY > 400;
+      setVisible((prev) => (prev !== shouldShow ? shouldShow : prev));
       tickingRef.current = false;
     };
 

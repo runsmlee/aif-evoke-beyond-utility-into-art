@@ -23,8 +23,9 @@ export class ErrorBoundary extends Component<
     this.state = { hasError: false, errorKey: 0 };
   }
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true, errorKey: 0 };
+  static getDerivedStateFromError(prevState: ErrorBoundaryState): ErrorBoundaryState {
+    // Preserve errorKey to maintain correct remount key for children after retry
+    return { hasError: true, errorKey: prevState.errorKey };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {

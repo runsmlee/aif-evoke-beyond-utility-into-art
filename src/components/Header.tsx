@@ -22,17 +22,28 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
 
   // Track active section for nav highlighting
   useEffect(() => {
-    const sectionIds = ["features", "gallery", "pricing", "testimonials"];
+    const sectionIds = navLinks.map((link) => link.id);
+    const visibleSections = new Map<string, number>();
+
     const observer = new IntersectionObserver(
       (entries) => {
-        // Find the most visible section
+        // Update visibility ratios and pick the most visible section
         for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
+          visibleSections.set(entry.target.id, entry.intersectionRatio);
+        }
+        let bestId: string | null = null;
+        let bestRatio = 0;
+        for (const [id, ratio] of visibleSections) {
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            bestId = id;
           }
         }
+        if (bestId) {
+          setActiveSection(bestId);
+        }
       },
-      { rootMargin: "-20% 0px -70% 0px" },
+      { rootMargin: "-20% 0px -70% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
 
     for (const id of sectionIds) {

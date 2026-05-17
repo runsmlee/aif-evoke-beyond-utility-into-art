@@ -71,10 +71,14 @@ export function Gallery() {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const categories = useMemo(() => ["All", ...new Set(galleryItems.map((item) => item.category))], []);
-  const filteredItems =
-    activeFilter === "All"
+
+  // Memoize filtered items to avoid duplicate computation across render + modal handlers
+  const filteredItems = useMemo(
+    () => activeFilter === "All"
       ? galleryItems
-      : galleryItems.filter((item) => item.category === activeFilter);
+      : galleryItems.filter((item) => item.category === activeFilter),
+    [activeFilter],
+  );
 
   // Animate transition when filter changes using requestAnimationFrame for reliability
   useEffect(() => {
@@ -134,14 +138,17 @@ export function Gallery() {
     setSelectedItem(null);
   }, []);
 
+  // Helper to find item index in the memoized filtered list
+  const findFilteredIndex = useCallback(
+    (id: string) => filteredItems.findIndex((item) => item.id === id),
+    [filteredItems],
+  );
+
   const handleModalPrev = useCallback(() => {
     if (!selectedItem) return;
-    const currentFiltered = activeFilter === "All"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeFilter);
-    const currentIndex = currentFiltered.findIndex((item) => item.id === selectedItem.id);
+    const currentIndex = findFilteredIndex(selectedItem.id);
     if (currentIndex <= 0) return;
-    const prevItem = currentFiltered[currentIndex - 1];
+    const prevItem = filteredItems[currentIndex - 1];
     if (prevItem) {
       setSelectedItem({
         id: prevItem.id,
@@ -152,16 +159,13 @@ export function Gallery() {
         description: prevItem.description,
       });
     }
-  }, [selectedItem, activeFilter]);
+  }, [selectedItem, filteredItems, findFilteredIndex]);
 
   const handleModalNext = useCallback(() => {
     if (!selectedItem) return;
-    const currentFiltered = activeFilter === "All"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeFilter);
-    const currentIndex = currentFiltered.findIndex((item) => item.id === selectedItem.id);
-    if (currentIndex === -1 || currentIndex >= currentFiltered.length - 1) return;
-    const nextItem = currentFiltered[currentIndex + 1];
+    const currentIndex = findFilteredIndex(selectedItem.id);
+    if (currentIndex === -1 || currentIndex >= filteredItems.length - 1) return;
+    const nextItem = filteredItems[currentIndex + 1];
     if (nextItem) {
       setSelectedItem({
         id: nextItem.id,
@@ -172,16 +176,12 @@ export function Gallery() {
         description: nextItem.description,
       });
     }
-  }, [selectedItem, activeFilter]);
+  }, [selectedItem, filteredItems, findFilteredIndex]);
 
-  const currentFilteredItems = activeFilter === "All"
-    ? galleryItems
-    : galleryItems.filter((item) => item.category === activeFilter);
-  const modalHasPrev = selectedItem
-    ? currentFilteredItems.findIndex((item) => item.id === selectedItem.id) > 0
-    : false;
+  // Derive modal navigation from the single memoized filtered list
+  const modalHasPrev = selectedItem ? findFilteredIndex(selectedItem.id) > 0 : false;
   const modalHasNext = selectedItem
-    ? currentFilteredItems.findIndex((item) => item.id === selectedItem.id) < currentFilteredItems.length - 1
+    ? findFilteredIndex(selectedItem.id) < filteredItems.length - 1
     : false;
 
   return (
@@ -237,6 +237,7 @@ export function Gallery() {
                 tabRefs.current[index] = el;
               }}
               role="tab"
+              id={`gallery-tab-${category}`}
               tabIndex={activeFilter === category ? 0 : -1}
               aria-selected={activeFilter === category}
               onClick={() => handleFilter(category)}
@@ -258,7 +259,7 @@ export function Gallery() {
             isTransitioning ? "opacity-0 scale-[0.98]" : "opacity-100 scale-100"
           }`}
           role="tabpanel"
-          aria-labelledby="gallery-heading"
+          aria-labelledby={`gallery-tab-${activeFilter}`}
           aria-label="Gallery items"
         >
           {filteredItems.length === 0 && (
