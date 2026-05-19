@@ -26,8 +26,7 @@ const capabilities: CapabilityItem[] = [
     subtitle: "Open it, create it, copy it",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <path d="M13 2L3 14h9l-1-8" />
-        <path d="M16 12l4-2-8-6 12" />
+        <path d="M13 2L3 14h8l-1 8 11-14h-8l1-6z" />
       </svg>
     ),
   },
