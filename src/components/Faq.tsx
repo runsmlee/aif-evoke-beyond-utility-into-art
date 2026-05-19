@@ -58,13 +58,10 @@ function FaqItemComponent({
 }) {
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const transitionStyle = prefersReducedMotion
-    ? { overflow: isOpen ? "visible" : "hidden", maxHeight: isOpen ? "none" : "0px" }
-    : {
-        maxHeight: isOpen ? `${contentRef.current?.scrollHeight ?? 500}px` : "0px",
-        overflow: "hidden",
-        transition: "max-height 0.3s ease-out",
-      };
+  const transitionStyle = {
+    overflow: isOpen ? "visible" : "hidden",
+    display: isOpen || prefersReducedMotion ? "block" : "none",
+  };
 
   return (
     <div className="border-b border-surface-200 dark:border-surface-700 last:border-b-0">

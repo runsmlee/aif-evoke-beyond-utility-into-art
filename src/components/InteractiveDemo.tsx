@@ -295,7 +295,7 @@ function InteractiveDemo() {
               aria-label={`Gradient preview using ${activeColors.length} colors at ${gradientAngle} degrees`}
             >
               {/* Angle indicator */}
-              <div className="absolute top-4 right-4 bg-black/20 backdrop-blur-sm rounded-lg px-3 py-1.5 text-white text-xs font-mono">
+              <div className="absolute top-4 right-4 bg-slate-950/25 backdrop-blur-sm rounded-lg px-3 py-1.5 text-white text-xs font-mono">
                 {gradientAngle}°
               </div>
 
@@ -576,7 +576,7 @@ function InteractiveDemo() {
                                   e.stopPropagation();
                                   deletePalette(palette.id);
                                 }}
-                                className="absolute top-0.5 right-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-black/40 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-500 focus-visible:opacity-100"
+                                className="absolute top-0.5 right-0.5 w-5 h-5 flex items-center justify-center rounded-full bg-slate-950/45 text-white text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-500 focus-visible:opacity-100"
                                 aria-label={`Delete palette saved at ${new Date(palette.savedAt).toLocaleTimeString()}`}
                               >
                                 ×

@@ -233,7 +233,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
       {/* Mobile Menu Backdrop */}
       {mobileMenuOpen && (
         <div
-          className="md:hidden fixed inset-0 top-16 bg-black/20 dark:bg-black/40 backdrop-blur-sm z-40 animate-fade-in"
+          className="md:hidden fixed inset-0 top-16 bg-slate-950/25 dark:bg-slate-950/45 backdrop-blur-sm z-40 animate-fade-in"
           aria-hidden="true"
           onClick={closeMenu}
         />

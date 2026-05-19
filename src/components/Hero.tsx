@@ -224,7 +224,7 @@ export function Hero() {
               Scroll
             </span>
             <div className="w-5 h-8 rounded-full border-2 border-surface-300 dark:border-surface-600 flex items-start justify-center pt-1.5">
-              <div className="w-1 h-2 rounded-full bg-surface-400 dark:bg-surface-500 animate-bounce" />
+              <div className="w-1 h-2 rounded-full bg-surface-400 dark:bg-surface-500 animate-pulse" />
             </div>
           </div>
         </div>

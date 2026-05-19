@@ -8,11 +8,11 @@
   --color-primary-200: #fecaca;
   --color-primary-300: #fca5a5;
   --color-primary-400: #f87171;
-  --color-primary-500: #EF4444;
-  --color-primary-600: #dc2626;
-  --color-primary-700: #b91c1c;
-  --color-primary-800: #991b1b;
-  --color-primary-900: #7f1d1d;
+  --color-primary-500: #b91c1c;
+  --color-primary-600: #991b1b;
+  --color-primary-700: #7f1d1d;
+  --color-primary-800: #691717;
+  --color-primary-900: #551313;
 
   --color-surface-50: #fafafa;
   --color-surface-100: #f5f5f5;
@@ -235,14 +235,9 @@ body {
   top: 0;
 }
 
-/* Artistic gradient text utility */
+/* Solid accent text utility */
 .gradient-text {
-  background: linear-gradient(135deg, #EF4444 0%, #f97316 50%, #EF4444 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 4s ease-in-out infinite;
+  color: var(--color-primary-500);
 }
 
 @keyframes gradient-shift {
@@ -385,21 +380,9 @@ section[aria-label="Introduction"] {
   );
 }
 
-/* Gradient text shimmer enhancement */
+/* Solid text shimmer compatibility hook */
 .gradient-text-shimmer {
-  background: linear-gradient(
-    135deg,
-    #EF4444 0%,
-    #f97316 25%,
-    #EF4444 50%,
-    #f97316 75%,
-    #EF4444 100%
-  );
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradient-shift 4s ease-in-out infinite;
+  color: var(--color-primary-500);
 }
 
 /* Scrollbar styling for dark mode */
@@ -468,8 +451,8 @@ section[aria-label="Introduction"] {
   }
 
   .gradient-text {
-    -webkit-text-fill-color: #EF4444;
-    color: #EF4444;
+    -webkit-text-fill-color: #B91C1C;
+    color: #B91C1C;
     background: none;
   }
 }

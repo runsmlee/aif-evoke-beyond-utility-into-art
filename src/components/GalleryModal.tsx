@@ -103,7 +103,7 @@ export function GalleryModal({ item, onClose, onPrev, onNext, hasPrev, hasNext }
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
+        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -136,7 +136,7 @@ export function GalleryModal({ item, onClose, onPrev, onNext, hasPrev, hasNext }
             ref={closeRef}
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
+            className="absolute top-4 right-4 w-10 h-10 bg-slate-950/25 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-slate-950/45 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
             aria-label="Close modal"
           >
             <svg
@@ -158,7 +158,7 @@ export function GalleryModal({ item, onClose, onPrev, onNext, hasPrev, hasNext }
             <button
               type="button"
               onClick={onPrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-slate-950/25 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-slate-950/45 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
               aria-label="Previous artwork"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -172,7 +172,7 @@ export function GalleryModal({ item, onClose, onPrev, onNext, hasPrev, hasNext }
             <button
               type="button"
               onClick={onNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/40 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-slate-950/25 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-slate-950/45 transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-white z-10"
               aria-label="Next artwork"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
