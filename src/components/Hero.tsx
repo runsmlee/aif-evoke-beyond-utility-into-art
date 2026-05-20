@@ -42,7 +42,7 @@ const capabilities: CapabilityItem[] = [
   },
 ];
 
-const rotatingWords = ["Art", "Experience", "Emotion", "Expression", "Craft"];
+const rotatingWords = ["Art", "Experiences", "Moments", "Expression", "Emotion"];
 
 const ParticleCanvas = lazy(() =>
   import("./ParticleCanvas").then((m) => ({ default: m.ParticleCanvas }))
@@ -138,8 +138,8 @@ export function Hero() {
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
-            Beyond Utility,{" "}
-            <span className="gradient-text">Into <RotatingWord words={rotatingWords} /></span>
+            Evoke — Where Digital Tools{" "}
+            <span className="gradient-text">Become <RotatingWord words={rotatingWords} /></span>
           </h1>
 
           {/* Subtitle */}
