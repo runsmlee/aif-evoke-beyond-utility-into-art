@@ -128,7 +128,7 @@ export function Hero() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500" aria-hidden="true" />
             </span>
             <span className="text-xs font-semibold text-primary-700 dark:text-primary-300 tracking-wide uppercase">
-              Where Design Meets Art
+              Beyond Utility, Into Art
             </span>
           </div>
 
@@ -138,8 +138,8 @@ export function Hero() {
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
-            Evoke — Where Digital Tools{" "}
-            <span className="gradient-text">Become <RotatingWord words={rotatingWords} /></span>
+            Evoke — Color & Gradient{" "}
+            <span className="gradient-text">Tools That Become <RotatingWord words={rotatingWords} /></span>
           </h1>
 
           {/* Subtitle */}
@@ -149,8 +149,8 @@ export function Hero() {
             }`}
             style={{ animationDelay: "0.15s" }}
           >
-            Evoke transforms everyday interactions into meaningful experiences.
-            We craft digital tools that don&apos;t just work — they inspire.
+            Free, open-source tools to craft color palettes and gradients
+            that go beyond utility into art. No signup required — start designing in seconds.
           </p>
 
           {/* CTA Buttons */}
