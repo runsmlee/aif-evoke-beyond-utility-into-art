@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { useState, useEffect, useRef, lazy, Suspense, memo } from "react";
+import { lazy, Suspense } from "react";
 import { useInView } from "../hooks/useInView";
 import { useReducedMotion } from "../hooks/useReducedMotion";
 
@@ -42,54 +42,9 @@ const capabilities: CapabilityItem[] = [
   },
 ];
 
-const rotatingWords = ["Art", "Experiences", "Moments", "Expression", "Emotion"];
-
 const ParticleCanvas = lazy(() =>
   import("./ParticleCanvas").then((m) => ({ default: m.ParticleCanvas }))
 );
-
-const RotatingWord = memo(function RotatingWord({ words, interval = 3000 }: { words: string[]; interval?: number }) {
-  const [index, setIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
-  const pendingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (prefersReducedMotion || words.length <= 1) return;
-
-    const timer = setInterval(() => {
-      setIsTransitioning(true);
-      pendingTimeout.current = setTimeout(() => {
-        setIndex((prev) => (prev + 1) % words.length);
-        setIsTransitioning(false);
-        pendingTimeout.current = null;
-      }, 300);
-    }, interval);
-
-    return () => {
-      clearInterval(timer);
-      if (pendingTimeout.current) {
-        clearTimeout(pendingTimeout.current);
-        pendingTimeout.current = null;
-      }
-    };
-  }, [words.length, interval, prefersReducedMotion]);
-
-  return (
-    <span
-      className="gradient-text inline-block transition-all duration-300"
-      style={{
-        opacity: isTransitioning ? 0 : 1,
-        transform: isTransitioning ? "translateY(8px)" : "translateY(0)",
-      }}
-      aria-live="polite"
-      aria-atomic="true"
-    >
-      {words[index] ?? words[0]}
-      <span className="inline-block w-[3px] h-[0.85em] bg-primary-500 dark:bg-primary-400 ml-0.5 align-middle animate-pulse" aria-hidden="true" />
-    </span>
-  );
-});
 
 export function Hero() {
   const { ref, isInView } = useInView({ threshold: 0.1 });
@@ -138,8 +93,8 @@ export function Hero() {
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
-            Evoke — Color & Gradient{" "}
-            <span className="gradient-text">Tools That Become <RotatingWord words={rotatingWords} /></span>
+            Generate Color Palettes That Feel{" "}
+            <span className="gradient-text">Intentional</span>
           </h1>
 
           {/* Subtitle */}

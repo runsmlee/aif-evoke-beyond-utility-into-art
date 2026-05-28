@@ -20,10 +20,10 @@ vi.mock("../hooks/useReducedMotion", () => ({
 import { Hero } from "./Hero";
 
 describe("Hero", () => {
-  it("renders the headline with rotating word", async () => {
+  it("renders the headline", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+      expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
     });
   });
 
@@ -62,7 +62,7 @@ describe("Hero", () => {
     it("does not render '10K+ Active Creators'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
       });
       expect(screen.queryByText("10K+ Active Creators")).toBeNull();
     });
@@ -70,7 +70,7 @@ describe("Hero", () => {
     it("does not render '50K+ Artworks Created'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
       });
       expect(screen.queryByText("50K+ Artworks Created")).toBeNull();
     });
@@ -78,7 +78,7 @@ describe("Hero", () => {
     it("does not render '99% Satisfaction Rate'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
       });
       expect(screen.queryByText("99% Satisfaction Rate")).toBeNull();
     });
@@ -86,7 +86,7 @@ describe("Hero", () => {
     it("does not render 'Trusted by creators worldwide'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
       });
       expect(screen.queryByText(/Trusted by creators worldwide/)).toBeNull();
     });
@@ -94,7 +94,7 @@ describe("Hero", () => {
     it("does not render any animated counter with percentage or K+ format", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
       });
       // No element should contain text matching "99%" or "K+" (fake stat patterns)
       const allText = document.body.textContent ?? "";
@@ -175,7 +175,7 @@ describe("Hero", () => {
     it("renders a scroll indicator element", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
       });
       // The scroll label should be rendered
       expect(screen.getByText("Scroll")).toBeDefined();
@@ -184,7 +184,7 @@ describe("Hero", () => {
     it("scroll indicator is hidden from screen readers", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Color & Gradient/)).toBeDefined();
+        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
       });
       // The scroll indicator container should have aria-hidden
       const scrollLabel = screen.getByText("Scroll");
