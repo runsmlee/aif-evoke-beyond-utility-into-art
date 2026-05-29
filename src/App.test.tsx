@@ -15,14 +15,9 @@ describe("App", () => {
     expect(screen.getByRole("heading", { level: 1 })).toBeDefined();
   });
 
-  it("renders the hero section with key CTA", () => {
+  it("renders the hero section with inline palette shuffle CTA", () => {
     render(<App />);
-    expect(screen.getByText("Explore Evoke")).toBeDefined();
-  });
-
-  it("renders the 'Try the Demo' CTA link", () => {
-    render(<App />);
-    expect(screen.getByText("Try the Demo")).toBeDefined();
+    expect(screen.getByLabelText("Shuffle color palette")).toBeDefined();
   });
 
   it("has a main content landmark", () => {

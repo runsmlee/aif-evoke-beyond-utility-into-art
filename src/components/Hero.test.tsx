@@ -20,10 +20,10 @@ vi.mock("../hooks/useReducedMotion", () => ({
 import { Hero } from "./Hero";
 
 describe("Hero", () => {
-  it("renders the headline", async () => {
+  it("renders the headline with 'Color Palette Generator'", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+      expect(screen.getByText("Color Palette Generator")).toBeDefined();
     });
   });
 
@@ -43,17 +43,40 @@ describe("Hero", () => {
     });
   });
 
-  it("renders the Explore Evoke CTA", async () => {
+  it("renders the shuffle button in the palette card", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText("Explore Evoke")).toBeDefined();
+      expect(screen.getByLabelText("Shuffle color palette")).toBeDefined();
     });
   });
 
-  it("renders the Try the Demo CTA", async () => {
+  it("renders the curated gradient preview", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText("Try the Demo")).toBeDefined();
+      const preview = screen.getByRole("img", { name: /Gradient preview/ });
+      expect(preview).toBeDefined();
+    });
+  });
+
+  it("renders color swatches with copy labels", async () => {
+    render(<Hero />);
+    await waitFor(() => {
+      // First curated palette has "Ember" color
+      expect(screen.getByLabelText(/Copy Ember/)).toBeDefined();
+    });
+  });
+
+  it("renders the 'Intentional' accent text", async () => {
+    render(<Hero />);
+    await waitFor(() => {
+      expect(screen.getByText("Intentional")).toBeDefined();
+    });
+  });
+
+  it("renders 'Create Palettes That Feel' in the sub-headline", async () => {
+    render(<Hero />);
+    await waitFor(() => {
+      expect(screen.getByText(/Create Palettes That Feel/)).toBeDefined();
     });
   });
 
@@ -62,7 +85,7 @@ describe("Hero", () => {
     it("does not render '10K+ Active Creators'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText("10K+ Active Creators")).toBeNull();
     });
@@ -70,7 +93,7 @@ describe("Hero", () => {
     it("does not render '50K+ Artworks Created'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText("50K+ Artworks Created")).toBeNull();
     });
@@ -78,7 +101,7 @@ describe("Hero", () => {
     it("does not render '99% Satisfaction Rate'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText("99% Satisfaction Rate")).toBeNull();
     });
@@ -86,7 +109,7 @@ describe("Hero", () => {
     it("does not render 'Trusted by creators worldwide'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText(/Trusted by creators worldwide/)).toBeNull();
     });
@@ -94,7 +117,7 @@ describe("Hero", () => {
     it("does not render any animated counter with percentage or K+ format", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // No element should contain text matching "99%" or "K+" (fake stat patterns)
       const allText = document.body.textContent ?? "";
@@ -175,7 +198,7 @@ describe("Hero", () => {
     it("renders a scroll indicator element", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // The scroll label should be rendered
       expect(screen.getByText("Scroll")).toBeDefined();
@@ -184,7 +207,7 @@ describe("Hero", () => {
     it("scroll indicator is hidden from screen readers", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText(/Generate Color Palettes/)).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // The scroll indicator container should have aria-hidden
       const scrollLabel = screen.getByText("Scroll");
