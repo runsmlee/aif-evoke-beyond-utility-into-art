@@ -166,18 +166,25 @@ export function Hero() {
             </span>
           </div>
 
-          {/* Headline */}
+          {/* Headline — exact-match keyword for SEO */}
           <h1
             className={`text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
             Color Palette Generator
-            <span className="block mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-surface-500 dark:text-surface-400">
-              Create Palettes That Feel{" "}
-              <span className="gradient-text font-extrabold">Intentional</span>
-            </span>
           </h1>
+
+          {/* Brand tagline — moved out of H1 to preserve keyword signal */}
+          <p
+            className={`mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-surface-500 dark:text-surface-400 ${
+              isInView ? "animate-slide-up" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.07s" }}
+          >
+            Create Palettes That Feel{" "}
+            <span className="gradient-text font-extrabold">Intentional</span>
+          </p>
 
           {/* Subtitle */}
           <p
