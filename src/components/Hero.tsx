@@ -166,13 +166,13 @@ export function Hero() {
             </span>
           </div>
 
-          {/* Headline — exact-match keyword for SEO */}
+          {/* Headline — differentiated niche keyword for SEO */}
           <h1
             className={`text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
-            Color Palette Generator
+            Art-Directed Color Palettes
           </h1>
 
           {/* Brand tagline — moved out of H1 to preserve keyword signal */}
@@ -193,8 +193,8 @@ export function Hero() {
             }`}
             style={{ animationDelay: "0.15s" }}
           >
-            Free, open-source tools to craft color palettes and gradients
-            that go beyond utility into art. No signup required — start designing in seconds.
+            Not another random generator. Create color palettes with
+            intentional contrast, harmony, and depth. Free, open-source — start designing in seconds.
           </p>
 
           {/* Live Palette Preview — curated default, never empty */}
