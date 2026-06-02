@@ -166,35 +166,25 @@ export function Hero() {
             </span>
           </div>
 
-          {/* Headline — differentiated niche keyword for SEO */}
+          {/* Headline — exact-match high-volume search term for SEO */}
           <h1
             className={`text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
-            Art-Directed Color Palettes
+            Color Palette Generator
           </h1>
 
-          {/* Brand tagline — moved out of H1 to preserve keyword signal */}
+          {/* Subheadline — semantic signal for crawlers + clarity for visitors */}
           <p
-            className={`mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold text-surface-500 dark:text-surface-400 ${
+            className={`mt-4 text-xl sm:text-2xl lg:text-3xl font-semibold text-surface-600 dark:text-surface-300 leading-snug max-w-2xl mx-auto ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
             style={{ animationDelay: "0.07s" }}
           >
-            Create Palettes That Feel{" "}
-            <span className="gradient-text font-extrabold">Intentional</span>
-          </p>
-
-          {/* Subtitle */}
-          <p
-            className={`mt-6 text-lg sm:text-xl text-surface-500 dark:text-surface-400 leading-relaxed max-w-2xl mx-auto ${
-              isInView ? "animate-slide-up" : "opacity-0"
-            }`}
-            style={{ animationDelay: "0.15s" }}
-          >
-            Not another random generator. Create color palettes with
-            intentional contrast, harmony, and depth. Free, open-source — start designing in seconds.
+            Art-directed palettes with intentional contrast, harmony, and depth.{" "}
+            <span className="gradient-text font-extrabold">Copy CSS gradients</span>{" "}
+            and ship.
           </p>
 
           {/* Live Palette Preview — curated default, never empty */}

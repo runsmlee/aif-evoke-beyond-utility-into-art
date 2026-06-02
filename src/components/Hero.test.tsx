@@ -20,18 +20,18 @@ vi.mock("../hooks/useReducedMotion", () => ({
 import { Hero } from "./Hero";
 
 describe("Hero", () => {
-  it("renders the headline with 'Art-Directed Color Palettes'", async () => {
+  it("renders the headline with 'Color Palette Generator'", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+      expect(screen.getByText("Color Palette Generator")).toBeDefined();
     });
   });
 
-  it("renders the subtitle", async () => {
+  it("renders the subheadline with 'Art-directed palettes'", async () => {
     render(<Hero />);
     await waitFor(() => {
       expect(
-        screen.getByText(/Not another random generator/),
+        screen.getByText(/Art-directed palettes with intentional contrast/),
       ).toBeDefined();
     });
   });
@@ -66,17 +66,17 @@ describe("Hero", () => {
     });
   });
 
-  it("renders the 'Intentional' accent text", async () => {
+  it("renders the 'Copy CSS gradients' accent text", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText("Intentional")).toBeDefined();
+      expect(screen.getByText("Copy CSS gradients")).toBeDefined();
     });
   });
 
-  it("renders 'Create Palettes That Feel' in the sub-headline", async () => {
+  it("renders 'and ship.' in the subheadline", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText(/Create Palettes That Feel/)).toBeDefined();
+      expect(screen.getByText(/and ship\./)).toBeDefined();
     });
   });
 
@@ -85,7 +85,7 @@ describe("Hero", () => {
     it("does not render '10K+ Active Creators'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText("10K+ Active Creators")).toBeNull();
     });
@@ -93,7 +93,7 @@ describe("Hero", () => {
     it("does not render '50K+ Artworks Created'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText("50K+ Artworks Created")).toBeNull();
     });
@@ -101,7 +101,7 @@ describe("Hero", () => {
     it("does not render '99% Satisfaction Rate'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText("99% Satisfaction Rate")).toBeNull();
     });
@@ -109,7 +109,7 @@ describe("Hero", () => {
     it("does not render 'Trusted by creators worldwide'", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       expect(screen.queryByText(/Trusted by creators worldwide/)).toBeNull();
     });
@@ -117,7 +117,7 @@ describe("Hero", () => {
     it("does not render any animated counter with percentage or K+ format", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // No element should contain text matching "99%" or "K+" (fake stat patterns)
       const allText = document.body.textContent ?? "";
@@ -173,7 +173,7 @@ describe("Hero", () => {
     it("renders all three capability cards with icons", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Infinite Combinations")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // Each capability should have an SVG icon
       const svgs = document.querySelectorAll("section svg");
@@ -183,7 +183,7 @@ describe("Hero", () => {
     it("renders capability section with border-top separator", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Infinite Combinations")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // Verify the capabilities section exists by checking for its children
       const capabilitiesSection = screen.getByText("Infinite Combinations").closest("div");
@@ -198,7 +198,7 @@ describe("Hero", () => {
     it("renders a scroll indicator element", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // The scroll label should be rendered
       expect(screen.getByText("Scroll")).toBeDefined();
@@ -207,7 +207,7 @@ describe("Hero", () => {
     it("scroll indicator is hidden from screen readers", async () => {
       render(<Hero />);
       await waitFor(() => {
-        expect(screen.getByText("Art-Directed Color Palettes")).toBeDefined();
+        expect(screen.getByText("Color Palette Generator")).toBeDefined();
       });
       // The scroll indicator container should have aria-hidden
       const scrollLabel = screen.getByText("Scroll");
