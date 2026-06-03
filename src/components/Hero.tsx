@@ -166,23 +166,23 @@ export function Hero() {
             </span>
           </div>
 
-          {/* Headline — exact-match high-volume search term for SEO */}
+          {/* Headline — differentiated value prop first, SEO keyword in subtitle */}
           <h1
             className={`text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
-            Color Palette Generator
+            Intentional Color Palettes
           </h1>
 
-          {/* Subheadline — semantic signal for crawlers + clarity for visitors */}
+          {/* Subheadline — SEO keyword + clarity for visitors */}
           <p
             className={`mt-4 text-xl sm:text-2xl lg:text-3xl font-semibold text-surface-600 dark:text-surface-300 leading-snug max-w-2xl mx-auto ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
             style={{ animationDelay: "0.07s" }}
           >
-            Art-directed palettes with intentional contrast, harmony, and depth.{" "}
+            The color palette generator with intentional contrast, harmony, and depth — not random colors.{" "}
             <span className="gradient-text font-extrabold">Copy CSS gradients</span>{" "}
             and ship.
           </p>
