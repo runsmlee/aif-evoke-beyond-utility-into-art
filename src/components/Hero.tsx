@@ -166,23 +166,33 @@ export function Hero() {
             </span>
           </div>
 
-          {/* Headline — differentiated value prop first, SEO keyword in subtitle */}
+          {/* Headline — matches title tag's core keyword for SEO alignment */}
           <h1
             className={`text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
-            Intentional Color Palettes
+            Color Palette Generator
           </h1>
 
-          {/* Subheadline — SEO keyword + clarity for visitors */}
+          {/* Subheading — brand philosophy as supporting text */}
           <p
-            className={`mt-4 text-xl sm:text-2xl lg:text-3xl font-semibold text-surface-600 dark:text-surface-300 leading-snug max-w-2xl mx-auto ${
+            className={`mt-3 text-lg sm:text-xl lg:text-2xl font-medium text-primary-600 dark:text-primary-400 leading-snug max-w-xl mx-auto ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
             style={{ animationDelay: "0.07s" }}
           >
-            The color palette generator with intentional contrast, harmony, and depth — not random colors.{" "}
+            Intentional Harmonies, Not Random Colors
+          </p>
+
+          {/* Description — SEO keyword + clarity for visitors */}
+          <p
+            className={`mt-4 text-base sm:text-lg lg:text-xl text-surface-600 dark:text-surface-300 leading-relaxed max-w-2xl mx-auto ${
+              isInView ? "animate-slide-up" : "opacity-0"
+            }`}
+            style={{ animationDelay: "0.14s" }}
+          >
+            Generate color palettes with intentional contrast, harmony, and depth.{" "}
             <span className="gradient-text font-extrabold">Copy CSS gradients</span>{" "}
             and ship.
           </p>
