@@ -161,7 +161,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
                 <path d="M2 12l10 5 10-5" />
               </svg>
             </div>
-            <span className="text-lg font-bold tracking-tight text-surface-900 dark:text-white">
+            <span className="text-lg font-bold whitespace-nowrap text-surface-900 dark:text-white">
               Evoke
             </span>
           </a>

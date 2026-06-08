@@ -27,11 +27,11 @@ describe("Hero", () => {
     });
   });
 
-  it("renders the subheading with 'Intentional Harmonies, Not Random Colors'", async () => {
+  it("renders the subheading with 'Colors That Belong Together'", async () => {
     render(<Hero />);
     await waitFor(() => {
       expect(
-        screen.getByText("Intentional Harmonies, Not Random Colors"),
+        screen.getByText("Colors That Belong Together"),
       ).toBeDefined();
     });
   });
@@ -66,17 +66,17 @@ describe("Hero", () => {
     });
   });
 
-  it("renders the 'Copy CSS gradients' accent text", async () => {
+  it("renders the 'Copy production-ready CSS gradients' accent text", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText("Copy CSS gradients")).toBeDefined();
+      expect(screen.getByText("Copy production-ready CSS gradients")).toBeDefined();
     });
   });
 
-  it("renders 'and ship.' in the subheadline", async () => {
+  it("renders 'in your browser' in the description", async () => {
     render(<Hero />);
     await waitFor(() => {
-      expect(screen.getByText(/and ship\./)).toBeDefined();
+      expect(screen.getByText(/in your browser\./)).toBeDefined();
     });
   });
 

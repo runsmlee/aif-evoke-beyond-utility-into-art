@@ -166,35 +166,35 @@ export function Hero() {
             </span>
           </div>
 
-          {/* Headline — matches title tag's core keyword for SEO alignment */}
+          {/* Headline — SEO keyword + brand value */}
           <h1
-            className={`text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight text-surface-900 dark:text-white leading-[1.08] ${
+            className={`text-4xl sm:text-5xl lg:text-7xl font-extrabold text-surface-900 dark:text-white leading-[1.08] ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
           >
             Color Palette Generator
           </h1>
 
-          {/* Subheading — brand philosophy as supporting text */}
+          {/* Subheading — compelling value proposition */}
           <p
             className={`mt-3 text-lg sm:text-xl lg:text-2xl font-medium text-primary-600 dark:text-primary-400 leading-snug max-w-xl mx-auto ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
             style={{ animationDelay: "0.07s" }}
           >
-            Intentional Harmonies, Not Random Colors
+            Colors That Belong Together
           </p>
 
-          {/* Description — SEO keyword + clarity for visitors */}
+          {/* Description — SEO-rich body copy for immediate comprehension */}
           <p
             className={`mt-4 text-base sm:text-lg lg:text-xl text-surface-600 dark:text-surface-300 leading-relaxed max-w-2xl mx-auto ${
               isInView ? "animate-slide-up" : "opacity-0"
             }`}
             style={{ animationDelay: "0.14s" }}
           >
-            Generate color palettes with intentional contrast, harmony, and depth.{" "}
-            <span className="gradient-text font-extrabold">Copy CSS gradients</span>{" "}
-            and ship.
+            Palettes built on real color theory, not random hex codes.{" "}
+            <span className="gradient-text font-extrabold">Copy production-ready CSS gradients</span>{" "}
+            in one click — no signup, everything runs in your browser.
           </p>
 
           {/* Live Palette Preview — curated default, never empty */}
